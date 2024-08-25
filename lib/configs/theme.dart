@@ -8,7 +8,18 @@ Color disabledColor = const Color.fromRGBO(142, 142, 147, 1);
 //Main Theme for the app
 ThemeData theme() {
   return ThemeData(
-    fontFamily: GoogleFonts.kanit().fontFamily,
+    primaryColor: primaryColor,
+    disabledColor: disabledColor,
+    textTheme: GoogleFonts.kanitTextTheme(),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      selectedItemColor: primaryColor,
+      unselectedItemColor: disabledColor,
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: ButtonStyle(
+        foregroundColor: WidgetStatePropertyAll(primaryColor),
+        overlayColor: WidgetStatePropertyAll(primaryColor.withOpacity(0.1)),
+      ),
+    ),
   );
 }
-

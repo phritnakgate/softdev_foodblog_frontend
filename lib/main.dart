@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:softdev_foodblog_frontend/screens/home_screen.dart';
 import 'configs/theme.dart';
 
 void main() {
@@ -11,18 +12,9 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: theme(),
-      home: const Scaffold(
-        body: Center(
-          child: Text(
-            'สวัสดี World!',
-            style: TextStyle(
-              fontSize: 24.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
+      home: HomeScreen(),
     );
   }
 }
