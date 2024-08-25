@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
+
+import '../../screens/view_recipe_screen.dart';
 
 class HomeWidget extends StatefulWidget {
   const HomeWidget({super.key});
@@ -106,7 +109,15 @@ class _HomeWidgetState extends State<HomeWidget> {
 Widget menuContainer(
     BuildContext context, String title, String imageUrl, int cal, int price) {
   return GestureDetector(
-    onTap: () {},
+    onTap: () {
+      Navigator.push(
+        context,
+        PageTransition(
+          type: PageTransitionType.rightToLeft,
+          child: const ViewRecipeScreen(),
+        ),
+      );
+    },
     child: Container(
       width: 196,
       height: 256,
