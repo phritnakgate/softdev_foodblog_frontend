@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../screens/view_recipe_screen.dart';
@@ -155,7 +157,8 @@ Widget menuContainer(
                 const SizedBox(height: 5),
                 Row(
                   children: [
-                    const Icon(Icons.local_fire_department),
+                    const Iconify(Mdi.fire),
+                    const SizedBox(width: 5),
                     Text(
                       "$cal กิโลแคลอรี่",
                       style: const TextStyle(fontSize: 12),
@@ -165,7 +168,8 @@ Widget menuContainer(
                 const SizedBox(height: 5),
                 Row(
                   children: [
-                    const Icon(Icons.attach_money),
+                    const Iconify(Mdi.money),
+                    const SizedBox(width: 5),
                     Text(
                       "$price บาท",
                       style: const TextStyle(fontSize: 12),
