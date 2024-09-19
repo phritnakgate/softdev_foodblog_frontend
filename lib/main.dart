@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'configs/theme.dart';
+import 'package:softdev_foodblog_frontend/configs/theme.dart';
+import 'screens/login_screen.dart';
+import 'screens/register_screen.dart';
+import 'screens/profile_screen.dart';
 
 void main() {
   runApp(const MainApp());
@@ -11,18 +14,14 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: theme(),
-      home: const Scaffold(
-        body: Center(
-          child: Text(
-            'สวัสดี World!',
-            style: TextStyle(
-              fontSize: 24.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const ProfileScreen(),
+        '/register': (context) => const RegisterScreen(),
+        '/login': (context) => const LoginScreen(),
+      },
     );
   }
 }
