@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:softdev_foodblog_frontend/screens/view_ingredients.dart';
 import 'configs/theme.dart';
 
 void main() {
@@ -12,17 +13,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: theme(),
-      home: const Scaffold(
-        body: Center(
-          child: Text(
-            'สวัสดี World!',
-            style: TextStyle(
-              fontSize: 24.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
+      home: const ViewIngredients()
     );
   }
 }
