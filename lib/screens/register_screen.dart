@@ -20,6 +20,19 @@ class RegisterScreen extends StatelessWidget {
                     children: [
                       Row(
                         children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 90.0, left: 10.0),
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.arrow_back,
+                                color: Colors.white,
+                                size: 28,
+                              ),
+                              onPressed: () {
+                                Navigator.pushReplacementNamed(context, '/register');
+                              },
+                            ),
+                          ),
                           const Expanded(
                             child: Center(
                               child: Text(
@@ -43,7 +56,8 @@ class RegisterScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Expanded(
+                      // Use Flexible instead of Expanded
+                      Flexible(
                         child: Container(
                           decoration: const BoxDecoration(
                             color: Colors.white,
@@ -74,18 +88,16 @@ class RegisterScreen extends StatelessWidget {
                                 const SizedBox(height: 16.0),
                                 buildTextFormField('Email'),
                                 const SizedBox(height: 16.0),
-                                buildTextFormField('Password',
-                                    obscureText: true),
+                                buildTextFormField('Password', obscureText: true),
                                 const SizedBox(height: 16.0),
                                 ElevatedButton(
                                   onPressed: () {
-                                    
+                                    Navigator.pushReplacementNamed(context, '/login');
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFFFFA20C),
                                     foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 18),
+                                    padding: const EdgeInsets.symmetric(vertical: 18),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20),
                                     ),
@@ -96,7 +108,7 @@ class RegisterScreen extends StatelessWidget {
                                   ),
                                   child: const Text('Submit'),
                                 ),
-                                const Spacer(),
+                                const SizedBox(height: 20), // Add space at the bottom
                               ],
                             ),
                           ),

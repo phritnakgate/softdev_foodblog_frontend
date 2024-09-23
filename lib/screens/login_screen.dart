@@ -20,6 +20,19 @@ class LoginScreen extends StatelessWidget {
                     children: [
                       Row(
                         children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 90.0, left: 10.0),
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.arrow_back,
+                                color: Colors.white,
+                                size: 28,
+                              ),
+                              onPressed: () {
+                                Navigator.pushReplacementNamed(context, '/register');
+                              },
+                            ),
+                          ),
                           const Expanded(
                             child: Center(
                               child: Text(
@@ -88,7 +101,7 @@ class LoginScreen extends StatelessWidget {
                                 const SizedBox(height: 16.0),
                                 ElevatedButton(
                                   onPressed: () {
-                                    // Handle registration logic here
+                                    Navigator.pushReplacementNamed(context, '/profile');
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFFFFA20C), 
