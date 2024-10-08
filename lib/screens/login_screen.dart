@@ -86,7 +86,7 @@ class LoginScreen extends StatelessWidget {
                                   alignment: Alignment.centerRight,
                                   child: TextButton(
                                     onPressed: () {
-                                      // Handle "Forgot Password" logic here
+                                      showForgotPasswordDialog(context);
                                     },
                                     child: const Text(
                                       'Forgot Password?',
@@ -104,7 +104,7 @@ class LoginScreen extends StatelessWidget {
                                     Navigator.pushReplacementNamed(context, '/profile');
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFFFFA20C), 
+                                    backgroundColor: const Color(0xFFFFA20C),
                                     foregroundColor: Colors.white,
                                     padding: const EdgeInsets.symmetric(vertical: 18),
                                     shape: RoundedRectangleBorder(
@@ -153,6 +153,74 @@ class LoginScreen extends StatelessWidget {
           borderSide: BorderSide.none,
         ),
       ),
+    );
+  }
+
+  void showForgotPasswordDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(20.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Forgot Password?',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF49454F),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  'Please enter your email to reset your password.',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFF49454F),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                buildTextFormField('Email'),
+                const SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: ElevatedButton(
+                    onPressed: () {
+
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFFFA20C),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      textStyle: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    child: const Text('Submit'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
