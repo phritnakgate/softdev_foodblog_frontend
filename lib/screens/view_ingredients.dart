@@ -10,6 +10,8 @@ class ViewIngredients extends StatefulWidget {
 }
 
 class _ViewIngredientsState extends State<ViewIngredients> {
+  int selectedIndex = 0; 
+  final List<String> categories = ['ข้าว/เส้น', 'เนื้อสัตว์', 'ผัก', 'เครื่องปรุง', 'ผลไม้'];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,9 +69,47 @@ class _ViewIngredientsState extends State<ViewIngredients> {
               },
             ),
             const SizedBox(height: 20),
+            //Ingredient types
+            SizedBox(
+              height: 50, // Set a fixed height for horizontal scroll
+              child: ListView.builder(
+                itemCount: categories.length,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  // Add actual buttons or widgets for ingredient types
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          selectedIndex = index;
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: index == selectedIndex
+                            ? Colors.orange // Active state for the first button
+                            : Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        side: const BorderSide(color: Colors.grey),
+                      ),
+                      child: Text(
+                        categories[index],
+                                    
+                        style: TextStyle(
+                          color: index == selectedIndex ? Colors.white : Colors.black,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 10),
             
             // Ingredient List
-            Expanded( // <-- This ensures ListView takes remaining space
+            Expanded( 
               child: GridView.builder(
                 itemCount: 24,
                 gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2) ,
