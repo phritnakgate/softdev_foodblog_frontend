@@ -20,7 +20,7 @@ class _HomeWidgetState extends State<HomeWidget> {
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
-            children: [
+            children:[
               const SizedBox(height: 10),
               const Center(
                 child: Text("ค้นหาสูตรอาหารใหม่ๆได้ที่นี่ !",
@@ -29,7 +29,7 @@ class _HomeWidgetState extends State<HomeWidget> {
               ),
               const SizedBox(height: 20),
               Row(
-                children: [
+                children:[
                   const Text("สูตรอาหารยอดนิยม",
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
