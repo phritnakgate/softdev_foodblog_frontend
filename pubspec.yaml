@@ -10,6 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
   google_fonts: ^6.2.1
+  image_picker: ^0.8.6
+  permission_handler: ^10.0.0
 
 dev_dependencies:
   flutter_test:
