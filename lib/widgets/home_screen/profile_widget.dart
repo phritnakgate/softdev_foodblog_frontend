@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:softdev_foodblog_frontend/widgets/profile_screen/switch_widget.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+class ProfileWidget extends StatefulWidget {
+  const ProfileWidget({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<ProfileWidget> createState() => _ProfileWidgetState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileWidgetState extends State<ProfileWidget> {
   bool showPosts = true;
 
   // Example data for "My Posts" and "Liked Posts"
@@ -103,12 +103,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
+                                    padding: const EdgeInsets.only(
+                                        bottom: 8.0, top: 8.0),
                                     child: Text(
-                                      showPosts ? 'My Post ${index + 1}' : 'Liked Post ${index + 1}',
+                                      showPosts
+                                          ? 'My Post ${index + 1}'
+                                          : 'Liked Post ${index + 1}',
                                       style: const TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
@@ -118,9 +122,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   Padding(
                                     padding: const EdgeInsets.only(right: 10.0),
                                     child: IconButton(
-                                      onPressed: () {
-                                       
-                                      },
+                                      onPressed: () {},
                                       icon: const Icon(Icons.edit),
                                       color: Colors.black,
                                     ),

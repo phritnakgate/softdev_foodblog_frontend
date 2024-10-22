@@ -21,7 +21,8 @@ class LoginScreen extends StatelessWidget {
                       Row(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(bottom: 90.0, left: 10.0),
+                            padding:
+                                const EdgeInsets.only(bottom: 90.0, left: 10.0),
                             child: IconButton(
                               icon: const Icon(
                                 Icons.arrow_back,
@@ -29,14 +30,14 @@ class LoginScreen extends StatelessWidget {
                                 size: 28,
                               ),
                               onPressed: () {
-                                Navigator.pushReplacementNamed(context, '/register');
+                                Navigator.pop(context);
                               },
                             ),
                           ),
                           const Expanded(
                             child: Center(
                               child: Text(
-                                'Welcome\nback!',
+                                'ยินดีต้อนรับ\nกลับมา !',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 24,
@@ -72,16 +73,17 @@ class LoginScreen extends StatelessWidget {
                                 const Padding(
                                   padding: EdgeInsets.symmetric(vertical: 15.0),
                                   child: Text(
-                                    'Sign in',
+                                    'เข้าสู่ระบบ',
                                     style: TextStyle(
-                                      fontSize: 26,
+                                      fontSize: 24,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
                                 buildTextFormField('Username'),
                                 const SizedBox(height: 16.0),
-                                buildTextFormField('Password', obscureText: true),
+                                buildTextFormField('Password',
+                                    obscureText: true),
                                 Align(
                                   alignment: Alignment.centerRight,
                                   child: TextButton(
@@ -101,21 +103,24 @@ class LoginScreen extends StatelessWidget {
                                 const SizedBox(height: 16.0),
                                 ElevatedButton(
                                   onPressed: () {
-                                    Navigator.pushReplacementNamed(context, '/profile');
+                                    Navigator.pop(context);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFFFFA20C),
                                     foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(vertical: 18),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     textStyle: const TextStyle(
-                                      fontSize: 26,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  child: const Text('Sign in'),
+                                  child: const Text(
+                                    'เข้าสู่ระบบ',
+                                  ),
                                 ),
                                 const Spacer(),
                               ],
@@ -145,7 +150,7 @@ class LoginScreen extends StatelessWidget {
         fillColor: Colors.black.withOpacity(0.1),
         labelStyle: const TextStyle(
           color: Color(0xFF49454F),
-          fontSize: 20,
+          fontSize: 16,
           fontWeight: FontWeight.bold,
         ),
         border: OutlineInputBorder(
@@ -198,13 +203,13 @@ class LoginScreen extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   child: ElevatedButton(
                     onPressed: () {
-
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFFFA20C),
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/bi.dart';
 import 'package:iconify_flutter/icons/majesticons.dart';
+import 'package:softdev_foodblog_frontend/repositories/authen_repositories.dart';
+import 'package:softdev_foodblog_frontend/screens/nologin_screen.dart';
 import 'package:softdev_foodblog_frontend/widgets/home_screen/home_widgets.dart';
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,6 +15,17 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 0;
+  bool isLogin = false;
+
+  @override
+  void initState() {
+    super.initState();
+    AuthenticationRepositories().isLogin().then((value) {
+      setState(() {
+        isLogin = value;
+      });
+    });
+  }
 
   void onBottomNavTapped(int index) {
     setState(() {
@@ -21,17 +33,15 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  List<Widget> widgetOptions = <Widget>[
-    const HomeWidget(),
-    const SearchWidget(),
-    const Placeholder(),
-    const Placeholder(),
-    const Placeholder(),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    
+    List<Widget> widgetOptions = <Widget>[
+      const HomeWidget(),
+      const SearchWidget(),
+      const Placeholder(),
+      const Placeholder(),
+      isLogin ? const ProfileWidget() : const NoLoginScreen(),
+    ];
     return Scaffold(
       body: widgetOptions.elementAt(selectedIndex),
       bottomNavigationBar: BottomNavigationBar(

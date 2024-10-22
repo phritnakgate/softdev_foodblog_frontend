@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:softdev_foodblog_frontend/configs/theme.dart';
+import 'package:softdev_foodblog_frontend/widgets/home_screen/home_widgets.dart';
 import 'screens/screens.dart';
 
 void main() {
@@ -19,7 +20,7 @@ class MainApp extends StatelessWidget {
         '/': (context) => const HomeScreen(),
         '/register': (context) => const RegisterScreen(),
         '/login': (context) => const LoginScreen(),
-        '/profile': (context) => const ProfileScreen(),
+        '/profile': (context) => const ProfileWidget(),
       },
     );
   }

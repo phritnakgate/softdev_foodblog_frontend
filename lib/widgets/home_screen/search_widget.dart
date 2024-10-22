@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:softdev_foodblog_frontend/widgets/home_screen/home_widget.dart';
 
 class SearchWidget extends StatefulWidget {
   const SearchWidget({super.key});
@@ -9,6 +8,14 @@ class SearchWidget extends StatefulWidget {
 }
 
 class _SearchWidgetState extends State<SearchWidget> {
+  TextEditingController searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -30,6 +37,10 @@ class _SearchWidgetState extends State<SearchWidget> {
                     Expanded(
                       flex: 6,
                       child: TextField(
+                        controller: searchController,
+                        onChanged: (value) => setState(() {
+                          searchController.text = value;
+                        }),
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: const Color.fromRGBO(242, 242, 247, 1),
@@ -67,53 +78,13 @@ class _SearchWidgetState extends State<SearchWidget> {
                 const SizedBox(
                   height: 10,
                 ),
-                SizedBox(
-                  height: 40,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 4, // Adjust this based on the number of items
-                    itemBuilder: (context, index) {
-                      return categoryBtn("Test", index == 0);
-                    },
-                    separatorBuilder: (context, index) {
-                      return const SizedBox(width: 10);
-                    },
-                  ),
-                ),
+                Text(searchController.text.isEmpty
+                    ? "กรอกข้อมูล"
+                    : searchController.text),
               ],
             ),
           ),
           const SizedBox(height: 10),
-          Container(
-            width: MediaQuery.sizeOf(context).width,
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "ค้นหาตามประเภท",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  const Text(
-                    "เมนูยอดฮิตตามประเภท",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    "เมนูที่คุณอาจชอบ",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  
-                ],
-              ),
-            ),
-          )
         ],
       ),
     ));

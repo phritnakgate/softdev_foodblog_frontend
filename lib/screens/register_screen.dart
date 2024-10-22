@@ -21,7 +21,8 @@ class RegisterScreen extends StatelessWidget {
                       Row(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(bottom: 90.0, left: 10.0),
+                            padding:
+                                const EdgeInsets.only(bottom: 90.0, left: 10.0),
                             child: IconButton(
                               icon: const Icon(
                                 Icons.arrow_back,
@@ -29,14 +30,15 @@ class RegisterScreen extends StatelessWidget {
                                 size: 28,
                               ),
                               onPressed: () {
-                                Navigator.pushReplacementNamed(context, '/register');
+                                Navigator.pushReplacementNamed(
+                                    context, '/register');
                               },
                             ),
                           ),
                           const Expanded(
                             child: Center(
                               child: Text(
-                                'Let\'s join our\ncommunity',
+                                'ลงทะเบียน\nกับแอพของเรา !',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 24,
@@ -73,42 +75,46 @@ class RegisterScreen extends StatelessWidget {
                                 const Padding(
                                   padding: EdgeInsets.symmetric(vertical: 15.0),
                                   child: Text(
-                                    'Create Account',
+                                    'สมัครสมาชิก',
                                     style: TextStyle(
-                                      fontSize: 26,
+                                      fontSize: 24,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
-                                buildTextFormField('Firstname'),
+                                buildTextFormField('ชื่อจริง'),
                                 const SizedBox(height: 16.0),
-                                buildTextFormField('Lastname'),
+                                buildTextFormField('นามสกุล'),
                                 const SizedBox(height: 16.0),
                                 buildTextFormField('Username'),
                                 const SizedBox(height: 16.0),
                                 buildTextFormField('Email'),
                                 const SizedBox(height: 16.0),
-                                buildTextFormField('Password', obscureText: true),
+                                buildTextFormField('Password',
+                                    obscureText: true),
                                 const SizedBox(height: 16.0),
                                 ElevatedButton(
                                   onPressed: () {
-                                    Navigator.pushReplacementNamed(context, '/login');
+                                    Navigator.pushReplacementNamed(
+                                        context, '/login');
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFFFFA20C),
                                     foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(vertical: 18),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     textStyle: const TextStyle(
-                                      fontSize: 26,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  child: const Text('Submit'),
+                                  child: const Text('ลงทะเบียน'),
                                 ),
-                                const SizedBox(height: 20), // Add space at the bottom
+                                const SizedBox(
+                                    height: 20), // Add space at the bottom
                               ],
                             ),
                           ),
@@ -136,7 +142,7 @@ class RegisterScreen extends StatelessWidget {
         fillColor: Colors.black.withOpacity(0.1),
         labelStyle: const TextStyle(
           color: Color(0xFF49454F),
-          fontSize: 20,
+          fontSize: 16,
           fontWeight: FontWeight.bold,
         ),
         border: OutlineInputBorder(
