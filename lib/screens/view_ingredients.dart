@@ -87,7 +87,7 @@ class _ViewIngredientsState extends State<ViewIngredients> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: index == selectedIndex
-                            ? Colors.orange // Active state for the first button
+                            ? const Color(0xFFFFAF30) // Active state for the first button
                             : Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
@@ -114,7 +114,7 @@ class _ViewIngredientsState extends State<ViewIngredients> {
                 itemCount: 24,
                 gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2) ,
                 itemBuilder: (context, index) {
-                  Ingredient ingredient = Ingredient(name: "ข้าวสวย", url: "lib/images/kao.webp", unit: "10");
+                  Ingredient ingredient = Ingredient(name: "บะหมี่เหลือง", url: "lib/images/kao.webp", unit: "10");
                   return CardIngredient(
                     ingredient: ingredient,
                   );
