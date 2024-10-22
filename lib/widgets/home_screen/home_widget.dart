@@ -38,25 +38,21 @@ class _HomeWidgetState extends State<HomeWidget> {
                     return const Center(child: Text("Error Loading Data"));
                   } else if (snapshot.hasData) {
                     List<dynamic> posts = snapshot.data!;
-                    debugPrint(posts.toString());
+                    //debugPrint(posts[0].toString());
                     return Expanded(
                       child: GridView.builder(
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2, // Number of columns
-                          mainAxisSpacing: 10, // Vertical space between items
-                          crossAxisSpacing:
-                              10, // Horizontal space between items
-                          childAspectRatio: 0.7, // Aspect ratio for each item
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10,
+                          childAspectRatio: 0.75,
                         ),
                         itemCount: posts.length,
                         itemBuilder: (context, index) {
                           return menuContainer(
                             context,
-                            utf8.decode(posts[index]['Title'].codeUnits),
-                            posts[index]['Picture'],
-                            posts[index]['Calories'],
-                            posts[index]['Price'],
+                            posts[index],
                           );
                         },
                       ),
@@ -73,15 +69,14 @@ class _HomeWidgetState extends State<HomeWidget> {
 }
 
 //ในอนาคตอาจเปลี่ยนเป็น data model จาก API แทนการใช้ List แบบนี้
-Widget menuContainer(
-    BuildContext context, String title, String imageUrl, int cal, int price) {
+Widget menuContainer(BuildContext context, Map<String, dynamic> data) {
   return GestureDetector(
     onTap: () {
       Navigator.push(
         context,
         PageTransition(
           type: PageTransitionType.rightToLeft,
-          child: const ViewRecipeScreen(),
+          child: ViewRecipeScreen(id: data["ID"]),
         ),
       );
     },
@@ -97,12 +92,11 @@ Widget menuContainer(
         ],
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: Image.network(
-              imageUrl,
+              data["Picture"],
               height: 107,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
@@ -121,7 +115,7 @@ Widget menuContainer(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  utf8.decode(data["Title"].codeUnits),
                   style: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold),
                 ),
@@ -131,7 +125,7 @@ Widget menuContainer(
                     const Iconify(Mdi.fire),
                     const SizedBox(width: 5),
                     Text(
-                      "$cal กิโลแคลอรี่",
+                      "${data["Calories"]} กิโลแคลอรี่",
                       style: const TextStyle(fontSize: 12),
                     ),
                   ],
@@ -142,7 +136,7 @@ Widget menuContainer(
                     const Iconify(Mdi.money),
                     const SizedBox(width: 5),
                     Text(
-                      "$price บาท",
+                      "${data["Price"]} บาท",
                       style: const TextStyle(fontSize: 12),
                     ),
                   ],

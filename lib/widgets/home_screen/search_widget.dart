@@ -109,24 +109,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
-                  SizedBox(
-                    height: 256,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 3, // Adjust this based on the number of items
-                      itemBuilder: (context, index) {
-                        return menuContainer(
-                            context,
-                            "ข้าวผัดไข่",
-                            "https://www.maggi.co.th/sites/default/files/srh_recipes/a1b6cab9710d963ab0d30f62e5d3a88a.jpeg",
-                            500,
-                            50);
-                      },
-                      separatorBuilder: (context, index) {
-                        return const SizedBox(width: 15);
-                      },
-                    ),
-                  ),
+                  
                 ],
               ),
             ),
