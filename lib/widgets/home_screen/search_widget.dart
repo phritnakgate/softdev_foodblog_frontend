@@ -136,3 +136,30 @@ class _SearchWidgetState extends State<SearchWidget> {
     ));
   }
 }
+
+Widget categoryBtn(String title, bool isSelected) {
+  return GestureDetector(
+    onTap: () {},
+    child: Container(
+      width: 100,
+      height: 40,
+      decoration: BoxDecoration(
+        color: isSelected ? Colors.black : Colors.grey[200],
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 5,
+              offset: const Offset(0, 5))
+        ],
+      ),
+      child: Center(
+        child: Text(
+          title,
+          style: TextStyle(
+              fontSize: 16, color: isSelected ? Colors.white : Colors.black),
+        ),
+      ),
+    ),
+  );
+}

@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../screens/view_recipe_screen.dart';
+import 'package:softdev_foodblog_frontend/repositories/post_repositories.dart';
 
 class HomeWidget extends StatefulWidget {
   const HomeWidget({super.key});
@@ -16,91 +19,53 @@ class _HomeWidgetState extends State<HomeWidget> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            children:[
-              const SizedBox(height: 10),
-              const Center(
-                child: Text("ค้นหาสูตรอาหารใหม่ๆได้ที่นี่ !",
-                    style:
-                        TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                children:[
-                  const Text("สูตรอาหารยอดนิยม",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  const Spacer(),
-                  TextButton(onPressed: () {}, child: const Text("ดูทั้งหมด")),
-                ],
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                height: 256,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 3, // Adjust this based on the number of items
-                  itemBuilder: (context, index) {
-                    return menuContainer(
-                        context,
-                        "ข้าวผัดไข่",
-                        "https://www.maggi.co.th/sites/default/files/srh_recipes/a1b6cab9710d963ab0d30f62e5d3a88a.jpeg",
-                        500,
-                        50);
-                  },
-                  separatorBuilder: (context, index) {
-                    return const SizedBox(width: 15);
-                  },
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  const Text("แยกตามประเภท",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  const Spacer(),
-                  TextButton(onPressed: () {}, child: const Text("ดูทั้งหมด")),
-                ],
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                height: 40,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 4, // Adjust this based on the number of items
-                  itemBuilder: (context, index) {
-                    return categoryBtn("Test", index == 0);
-                  },
-                  separatorBuilder: (context, index) {
-                    return const SizedBox(width: 10);
-                  },
-                ),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                height: 256,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 3, // Adjust this based on the number of items
-                  itemBuilder: (context, index) {
-                    return menuContainer(
-                        context,
-                        "ข้าวผัดไข่",
-                        "https://www.maggi.co.th/sites/default/files/srh_recipes/a1b6cab9710d963ab0d30f62e5d3a88a.jpeg",
-                        500,
-                        50);
-                  },
-                  separatorBuilder: (context, index) {
-                    return const SizedBox(width: 15);
-                  },
-                ),
-              ),
-            ],
-          ),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            const Center(
+              child: Text("ค้นหาสูตรอาหารใหม่ๆได้ที่นี่ !",
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+            ),
+            const SizedBox(height: 20),
+            FutureBuilder<List<dynamic>>(
+                future: PostRepositories().getAllPosts(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return const Center(child: Text("Error Loading Data"));
+                  } else if (snapshot.hasData) {
+                    List<dynamic> posts = snapshot.data!;
+                    debugPrint(posts.toString());
+                    return Expanded(
+                      child: GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2, // Number of columns
+                          mainAxisSpacing: 10, // Vertical space between items
+                          crossAxisSpacing:
+                              10, // Horizontal space between items
+                          childAspectRatio: 0.7, // Aspect ratio for each item
+                        ),
+                        itemCount: posts.length,
+                        itemBuilder: (context, index) {
+                          return menuContainer(
+                            context,
+                            utf8.decode(posts[index]['Title'].codeUnits),
+                            posts[index]['Picture'],
+                            posts[index]['Calories'],
+                            posts[index]['Price'],
+                          );
+                        },
+                      ),
+                    );
+                  } else {
+                    return const Center(child: Text("No Data"));
+                  }
+                }),
+          ],
         ),
       ),
     );
@@ -121,8 +86,6 @@ Widget menuContainer(
       );
     },
     child: Container(
-      width: 196,
-      height: 256,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
@@ -134,6 +97,7 @@ Widget menuContainer(
         ],
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
@@ -141,6 +105,13 @@ Widget menuContainer(
               imageUrl,
               height: 107,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Image.network(
+                  "https://bitsofco.de/img/Qo5mfYDE5v-350.png",
+                  height: 107,
+                  fit: BoxFit.cover,
+                );
+              },
             ),
           ),
           const SizedBox(height: 10),
@@ -200,33 +171,6 @@ Widget menuContainer(
             ),
           )
         ],
-      ),
-    ),
-  );
-}
-
-Widget categoryBtn(String title, bool isSelected) {
-  return GestureDetector(
-    onTap: () {},
-    child: Container(
-      width: 100,
-      height: 40,
-      decoration: BoxDecoration(
-        color: isSelected ? Colors.black : Colors.grey[200],
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 5,
-              offset: const Offset(0, 5))
-        ],
-      ),
-      child: Center(
-        child: Text(
-          title,
-          style: TextStyle(
-              fontSize: 16, color: isSelected ? Colors.white : Colors.black),
-        ),
       ),
     ),
   );

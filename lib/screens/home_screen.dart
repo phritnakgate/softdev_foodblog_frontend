@@ -4,6 +4,7 @@ import 'package:iconify_flutter/icons/bi.dart';
 import 'package:iconify_flutter/icons/majesticons.dart';
 import 'package:softdev_foodblog_frontend/widgets/home_screen/home_widgets.dart';
 
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -30,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       body: widgetOptions.elementAt(selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
