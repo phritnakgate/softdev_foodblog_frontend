@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:softdev_foodblog_frontend/screens/create_recipe_screen.dart';
-import 'package:softdev_foodblog_frontend/screens/edit_recipe_screen.dart';
-import 'configs/theme.dart';
+import 'package:softdev_foodblog_frontend/configs/theme.dart';
+import 'package:softdev_foodblog_frontend/widgets/home_screen/home_widgets.dart';
+import 'screens/screens.dart';
 
 void main() {
   runApp(const MainApp());
@@ -15,10 +15,12 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: theme(),
-      initialRoute: '/edit_recipe',
+      initialRoute: '/',
       routes: {
-        '/create_recipe': (context) => const CreateRecipe(),
-        '/edit_recipe': (context) => const EditRecipe(),
+        '/': (context) => const HomeScreen(),
+        '/register': (context) => const RegisterScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/profile': (context) => const ProfileWidget(),
       },
     );
   }
