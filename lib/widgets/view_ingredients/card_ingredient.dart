@@ -4,7 +4,7 @@ import 'package:softdev_foodblog_frontend/model/ingredient.dart';
 class CardIngredient extends StatelessWidget {
   final Ingredient ingredient;
 
-  CardIngredient({super.key, required this.ingredient});
+  const CardIngredient({super.key, required this.ingredient});
 
   @override
   Widget build(BuildContext context) {

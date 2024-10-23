@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:softdev_foodblog_frontend/model/ingredient.dart';
-import 'package:softdev_foodblog_frontend/widgets/card_ingredient.dart';
+import 'package:softdev_foodblog_frontend/widgets/view_ingredients/card_ingredient.dart';
+
 
 class ViewIngredients extends StatefulWidget {
   const ViewIngredients({super.key});
@@ -32,13 +33,13 @@ class _ViewIngredientsState extends State<ViewIngredients> {
               viewHintText: 'Search here...',
               builder: (BuildContext context, SearchController controller) {
                 return SearchBar(
-                  padding: MaterialStateProperty.all(
+                  padding: WidgetStateProperty.all(
                       const EdgeInsets.symmetric(horizontal: 18.0)),
                   backgroundColor:
-                      MaterialStateProperty.all(const Color(0xFFFFAF30)),
+                      WidgetStateProperty.all(const Color(0xFFFFAF30)),
                   controller: controller,
                   hintText: "what are you looking for?",
-                  hintStyle: MaterialStateProperty.all(
+                  hintStyle: WidgetStateProperty.all(
                       const TextStyle(color: Colors.white)),
                   onTap: () {
                     controller.openView();
