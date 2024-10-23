@@ -29,7 +29,7 @@ class ViewRecipeScreen extends StatelessWidget {
                 return const Center(child: Text("Error Loading Data"));
               } else if (snapshot.hasData) {
                 Map<String, dynamic> details = snapshot.data!;
-                debugPrint(details.toString());
+                //debugPrint(details.toString());
                 return SingleChildScrollView(
                   child: SafeArea(
                     child: Padding(
@@ -152,7 +152,7 @@ class ViewRecipeScreen extends StatelessWidget {
 }
 
 Widget tagsContainer(BuildContext context, String tag) {
-  debugPrint(tag);
+  //debugPrint(tag);
   return Container(
     width: 100,
     height: 30,
@@ -169,7 +169,7 @@ Widget tagsContainer(BuildContext context, String tag) {
     ),
     child: Center(
       child: Text(
-        tag,
+        utf8.decode(tag.codeUnits),
         style: const TextStyle(color: Colors.white),
       ),
     ),
@@ -178,6 +178,7 @@ Widget tagsContainer(BuildContext context, String tag) {
 
 Widget ingredientContainer(
     BuildContext context, Map<String, dynamic> ingredient) {
+  //debugPrint(ingredient.toString());
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 5),
     child: Container(
@@ -199,9 +200,13 @@ Widget ingredientContainer(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(utf8.decode(ingredient["Name"].codeUnits),
+              Text(
+                  utf8.decode(ingredient["IngredientWithQuantity"]["Ingredient"]
+                          ["Name"]
+                      .codeUnits),
                   style: const TextStyle(fontSize: 16)),
-              Text("x ${utf8.decode(ingredient["Unit"].codeUnits)}"),
+              Text(
+                  "${ingredient["IngredientWithQuantity"]["Quantity"]} ${utf8.decode(ingredient["IngredientWithQuantity"]["Ingredient"]["Unit"].codeUnits)}"),
             ],
           ),
         )),
