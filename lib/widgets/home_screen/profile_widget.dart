@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:softdev_foodblog_frontend/repositories/authen_repositories.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:softdev_foodblog_frontend/widgets/profile_screen/switch_widget.dart';
 
 class ProfileWidget extends StatefulWidget {
@@ -10,6 +14,19 @@ class ProfileWidget extends StatefulWidget {
 
 class _ProfileWidgetState extends State<ProfileWidget> {
   bool showPosts = true;
+  int userId = -1;
+
+  @override
+  void initState() {
+    super.initState();
+    AuthenticationRepositories().getToken().then((value) {
+      setState(() {
+        userId = JWT
+            .verify(value, SecretKey(dotenv.env['ACCESS_SECRET_KEY']!))
+            .payload['user_id'];
+      });
+    });
+  }
 
   // Example data for "My Posts" and "Liked Posts"
   List<String> myPosts = ['My Post 1', 'My Post 2', 'My Post 3', 'My Post 4'];
@@ -20,21 +37,30 @@ class _ProfileWidgetState extends State<ProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
+    AuthenticationRepositories().getUserData(userId);
     List<String> currentList = showPosts ? myPosts : likedPosts;
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Center(
-          child: Text(
-            'Profile',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              final payload = AuthenticationRepositories().logout(userId);
+              Navigator.pushReplacementNamed(context, "/");
+            },
+            icon: const Icon(Icons.logout),
+          ),
+        ],
+        title: const Text(
+          'โปรไฟล์ของคุณ',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.orangeAccent,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,

@@ -1,67 +1,91 @@
 import 'dart:convert';
-import 'dart:io';
+
 import 'package:flutter/material.dart';
+
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthenticationRepositories {
   final String url = "softdev.bkkz.org";
   // === HANDLE AUTHENTICATION === \\
-  Future<void> login(String username, String password) async {
+  Future<bool> login(String username, String password) async {
     final response = await http.post(Uri.parse('http://$url/login'),
         body: jsonEncode({"username": username, "password": password}),
         headers: {"Content-Type": "application/json"});
     if (response.statusCode == 200) {
-      final body = jsonDecode(response.body);
-      final token = body["token"];
+      // Extract JWT token from the response header
+      final jwtTokenStart =
+          response.headers["set-cookie"]!.indexOf("jwt=") + "jwt=".length;
+      final jwtTokenEnd =
+          response.headers["set-cookie"]!.indexOf(";", jwtTokenStart);
+      final jwtToken =
+          response.headers["set-cookie"]!.substring(jwtTokenStart, jwtTokenEnd);
+      // Extract JWT expiration from the response header
+      final jwtExpiredStart =
+          response.headers["set-cookie"]!.indexOf("expires=") +
+              "expires=".length;
+      final jwtExpiredEnd =
+          response.headers["set-cookie"]!.indexOf(";", jwtExpiredStart);
+      final jwtExpired = response.headers["set-cookie"]!
+          .substring(jwtExpiredStart, jwtExpiredEnd);
+      final DateFormat format = DateFormat('EEE, dd MMM yyyy HH:mm:ss zzz');
+      final jwtExpiredDate = format.parseUTC(jwtExpired);
+      debugPrint(jwtExpired.toString());
       final pref = await SharedPreferences.getInstance();
-      await pref.setString("jwt_token", token);
+      await pref.setString("jwt_token", jwtToken);
+      await pref.setString("jwt_expired", jwtExpiredDate.toIso8601String());
       debugPrint("Login Success");
+      return true;
     } else {
-      throw Exception("Failed to login");
+      return false;
     }
   }
 
+  Future<String> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('jwt_token') ?? '';
+  }
+
   Future<void> logout(int id) async {
-    final url = Uri.parse('http://127.0.0.1:8080/logout/$id');
+    final logouturl = Uri.parse('http://$url/logout/$id');
 
     // Retrieve the stored JWT
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('jwt_token') ?? '';
+    debugPrint('Token: $token');
 
-    final response = await http.post(
-      url,
-      headers: {
-        'Authorization': 'Bearer $token',
-      },
-    );
+    final response = await http.post(logouturl);
 
     if (response.statusCode == 200) {
-      await prefs.remove('jwt_token'); // Clear the JWT token from local storage
+      await prefs.remove('jwt_token');
+      await prefs.remove('jwt_expired');
       debugPrint('Logged out successfully.');
     } else {
-      throw Exception('Failed to log out');
+      debugPrint(response.body);
+      debugPrint('Failed to log out');
     }
   }
 
-  Future<void> registerUser(String username, String password, String firstName, String lastName, File pictureFile) async {
-  final url = Uri.parse('http://127.0.0.1:8080/user');
+  Future<void> registerUser(String username, String password, String firstName,
+      String lastName) async {
+    final registerUrl = Uri.parse('http://$url/user');
 
-  var request = http.MultipartRequest('POST', url)
-    ..fields['Username'] = username
-    ..fields['Password'] = password
-    ..fields['FirstName'] = firstName
-    ..fields['LastName'] = lastName
-    ..files.add(await http.MultipartFile.fromPath('PictureProfile', pictureFile.path));
+    var request = http.MultipartRequest('POST', registerUrl)
+      ..fields['Username'] = username
+      ..fields['Password'] = password
+      ..fields['FirstName'] = firstName
+      ..fields['LastName'] = lastName;
 
-  final response = await request.send();
+    final response = await request.send();
 
-  if (response.statusCode == 200) {
-    debugPrint('User registered successfully.');
-  } else {
-    throw Exception('Failed to register user');
+    if (response.statusCode == 200) {
+      debugPrint('User registered successfully.');
+    } else {
+      debugPrint(response.reasonPhrase);
+      debugPrint("Failed to register user");
+    }
   }
-}
 
   // === HANDLE USER DATA === \\
   Future<void> getUserData(int id) async {
@@ -73,7 +97,8 @@ class AuthenticationRepositories {
       final userData = jsonDecode(response.body);
       debugPrint('User data: $userData');
     } else {
-      throw Exception('Failed to fetch user data');
+      debugPrint(response.body);
+      debugPrint("Failed to get user data");
     }
   }
 
@@ -82,5 +107,16 @@ class AuthenticationRepositories {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('jwt_token');
     return token != null;
+  }
+
+  // == HANDLE EXPIRED TOKEN == \\
+  Future<bool> isTokenExpired() async {
+    final prefs = await SharedPreferences.getInstance();
+    final expired = prefs.getString('jwt_expired');
+    if (expired != null) {
+      final expiredDate = DateTime.parse(expired);
+      return expiredDate.isBefore(DateTime.now());
+    }
+    return true;
   }
 }

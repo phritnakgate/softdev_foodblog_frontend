@@ -5,6 +5,12 @@ class RegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController firstNameController = TextEditingController();
+    TextEditingController lastNameController = TextEditingController();
+    TextEditingController usernameController = TextEditingController();
+    TextEditingController emailController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFA20C),
       body: SafeArea(
@@ -29,10 +35,7 @@ class RegisterScreen extends StatelessWidget {
                                 color: Colors.white,
                                 size: 28,
                               ),
-                              onPressed: () {
-                                Navigator.pushReplacementNamed(
-                                    context, '/register');
-                              },
+                              onPressed: () => Navigator.pop(context),
                             ),
                           ),
                           const Expanded(
@@ -82,15 +85,19 @@ class RegisterScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                buildTextFormField('ชื่อจริง'),
+                                buildTextFormField(
+                                    'ชื่อจริง', firstNameController),
                                 const SizedBox(height: 16.0),
-                                buildTextFormField('นามสกุล'),
+                                buildTextFormField(
+                                    'นามสกุล', lastNameController),
                                 const SizedBox(height: 16.0),
-                                buildTextFormField('Username'),
+                                buildTextFormField(
+                                    'Username', usernameController),
                                 const SizedBox(height: 16.0),
-                                buildTextFormField('Email'),
+                                buildTextFormField('Email', emailController),
                                 const SizedBox(height: 16.0),
-                                buildTextFormField('Password',
+                                buildTextFormField(
+                                    'Password', passwordController,
                                     obscureText: true),
                                 const SizedBox(height: 16.0),
                                 ElevatedButton(
@@ -131,8 +138,10 @@ class RegisterScreen extends StatelessWidget {
     );
   }
 
-  Widget buildTextFormField(String label, {bool obscureText = false}) {
+  Widget buildTextFormField(String label, TextEditingController controller,
+      {bool obscureText = false}) {
     return TextFormField(
+      controller: controller,
       obscureText: obscureText,
       cursorColor: const Color(0xFF49454F),
       decoration: InputDecoration(

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:softdev_foodblog_frontend/repositories/authen_repositories.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController usernameController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
     return Scaffold(
       backgroundColor: const Color(0xFFFFA20C),
       body: SafeArea(
@@ -80,9 +83,11 @@ class LoginScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                buildTextFormField('Username'),
+                                buildTextFormField(
+                                    usernameController, 'Username'),
                                 const SizedBox(height: 16.0),
-                                buildTextFormField('Password',
+                                buildTextFormField(
+                                    passwordController, 'Password',
                                     obscureText: true),
                                 Align(
                                   alignment: Alignment.centerRight,
@@ -103,7 +108,24 @@ class LoginScreen extends StatelessWidget {
                                 const SizedBox(height: 16.0),
                                 ElevatedButton(
                                   onPressed: () {
-                                    Navigator.pop(context);
+                                    AuthenticationRepositories()
+                                        .login(usernameController.text,
+                                            passwordController.text)
+                                        .then((value) {
+                                      if (value) {
+                                        Navigator.pushReplacementNamed(
+                                            context, "/");
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                'เข้าสู่ระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง !'),
+                                          ),
+                                        );
+                                      }
+                                    });
+                                    //Navigator.pop(context);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFFFFA20C),
@@ -139,8 +161,10 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget buildTextFormField(String label, {bool obscureText = false}) {
+  Widget buildTextFormField(TextEditingController controller, String label,
+      {bool obscureText = false}) {
     return TextFormField(
+      controller: controller,
       obscureText: obscureText,
       cursorColor: const Color(0xFF49454F),
       decoration: InputDecoration(
@@ -162,6 +186,7 @@ class LoginScreen extends StatelessWidget {
   }
 
   void showForgotPasswordDialog(BuildContext context) {
+    TextEditingController emailcontroller = TextEditingController();
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -181,7 +206,7 @@ class LoginScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Forgot Password?',
+                  'ลืมรหัสผ่าน?',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -197,7 +222,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                buildTextFormField('Email'),
+                buildTextFormField(emailcontroller, 'Email'),
                 const SizedBox(height: 20),
                 Align(
                   alignment: Alignment.centerRight,

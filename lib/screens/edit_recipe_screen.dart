@@ -3,14 +3,14 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
-class EditRecipe extends StatefulWidget {
-  const EditRecipe({super.key});
+class EditRecipeScreen extends StatefulWidget {
+  const EditRecipeScreen({super.key});
 
   @override
-  _EditRecipeState createState() => _EditRecipeState();
+  _EditRecipeScreenState createState() => _EditRecipeScreenState();
 }
 
-class _EditRecipeState extends State<EditRecipe> {
+class _EditRecipeScreenState extends State<EditRecipeScreen> {
   File? _selectedImage;
 
   @override

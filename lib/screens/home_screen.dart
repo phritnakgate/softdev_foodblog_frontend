@@ -3,6 +3,7 @@ import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/bi.dart';
 import 'package:iconify_flutter/icons/majesticons.dart';
 import 'package:softdev_foodblog_frontend/repositories/authen_repositories.dart';
+import 'package:softdev_foodblog_frontend/screens/create_recipe_screen.dart';
 import 'package:softdev_foodblog_frontend/screens/nologin_screen.dart';
 import 'package:softdev_foodblog_frontend/widgets/home_screen/home_widgets.dart';
 
@@ -38,8 +39,8 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Widget> widgetOptions = <Widget>[
       const HomeWidget(),
       const SearchWidget(),
-      const Placeholder(),
-      const Placeholder(),
+      isLogin ? const CreateRecipeScreen() : const NoLoginScreen(),
+      isLogin ? const Placeholder() : const NoLoginScreen(),
       isLogin ? const ProfileWidget() : const NoLoginScreen(),
     ];
     return Scaffold(
