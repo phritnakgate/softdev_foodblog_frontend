@@ -14,4 +14,21 @@ class PostRepositories {
     final response = await http.get(Uri.parse('http://$url/post/$id'));
     return jsonDecode(response.body);
   }
+
+  // === RECIPE FILTERING === \\
+  Future<List<dynamic>> getPostByTitle(String title) async {
+    final response =
+        await http.get(Uri.parse('http://$url/posts/search?title=$title'));
+    return jsonDecode(response.body);
+  }
+  Future<List<dynamic>> getPostByTag(String title) async {
+    final response =
+        await http.get(Uri.parse('http://$url/posts/search?title=$title'));
+    return jsonDecode(response.body);
+  }
+  Future<List<dynamic>> getPostByPrice(String priceMin, String priceMax) async {
+    final response =
+        await http.get(Uri.parse('http://$url/posts/filter/price?min_price=$priceMin&max_price=$priceMax'));
+    return jsonDecode(response.body);
+  }
 }

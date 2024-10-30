@@ -16,18 +16,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   bool showPosts = true;
   int userId = -1;
 
-  @override
-  void initState() {
-    super.initState();
-    AuthenticationRepositories().getToken().then((value) {
-      setState(() {
-        userId = JWT
-            .verify(value, SecretKey(dotenv.env['ACCESS_SECRET_KEY']!))
-            .payload['user_id'];
-      });
-    });
-  }
-
   // Example data for "My Posts" and "Liked Posts"
   List<String> myPosts = ['My Post 1', 'My Post 2', 'My Post 3', 'My Post 4'];
   List<String> likedPosts = ['Liked Post 1', 'Liked Post 2'];
@@ -37,9 +25,15 @@ class _ProfileWidgetState extends State<ProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
-    AuthenticationRepositories().getUserData(userId);
+    AuthenticationRepositories().getToken().then((value) {
+      setState(() {
+        userId = JWT
+            .verify(value, SecretKey(dotenv.env['ACCESS_SECRET_KEY']!))
+            .payload['user_id'];
+      });
+    });
+    //AuthenticationRepositories().getUserData(userId);
     List<String> currentList = showPosts ? myPosts : likedPosts;
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

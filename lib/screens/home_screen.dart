@@ -36,6 +36,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AuthenticationRepositories().isLogin().then((value) {
+      setState(() {
+        isLogin = value;
+      });
+    });
     List<Widget> widgetOptions = <Widget>[
       const HomeWidget(),
       const SearchWidget(),

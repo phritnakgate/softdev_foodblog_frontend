@@ -12,7 +12,9 @@ class AuthenticationRepositories {
   Future<bool> login(String username, String password) async {
     final response = await http.post(Uri.parse('http://$url/login'),
         body: jsonEncode({"username": username, "password": password}),
-        headers: {"Content-Type": "application/json"});
+        headers: {
+          "Content-Type": "application/json",
+        });
     if (response.statusCode == 200) {
       // Extract JWT token from the response header
       final jwtTokenStart =
@@ -55,7 +57,9 @@ class AuthenticationRepositories {
     final token = prefs.getString('jwt_token') ?? '';
     debugPrint('Token: $token');
 
-    final response = await http.post(logouturl);
+    final response = await http.post(logouturl, headers: {
+      "Cookie": "jwt=$token",
+    });
 
     if (response.statusCode == 200) {
       await prefs.remove('jwt_token');
@@ -91,8 +95,10 @@ class AuthenticationRepositories {
   Future<void> getUserData(int id) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('jwt_token') ?? '';
-    final response = await http.get(Uri.parse('http://$url/user/$id'),
-        headers: {'Authorization': 'Bearer $token'});
+    final response =
+        await http.get(Uri.parse('http://$url/user/$id'), headers: {
+      "Cookie": "jwt=$token",
+    });
     if (response.statusCode == 200) {
       final userData = jsonDecode(response.body);
       debugPrint('User data: $userData');
@@ -106,6 +112,7 @@ class AuthenticationRepositories {
   Future<bool> isLogin() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('jwt_token');
+    //debugPrint('Token: $token');
     return token != null;
   }
 
