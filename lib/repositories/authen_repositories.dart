@@ -13,7 +13,6 @@ class AuthenticationRepositories {
 
   // === HANDLE AUTHENTICATION === \\
   Future<bool> login(String username, String password) async {
-    Map<String, dynamic> userData = {};
     final response = await http.post(Uri.parse('http://$url/login'),
         body: jsonEncode({"username": username, "password": password}),
         headers: {

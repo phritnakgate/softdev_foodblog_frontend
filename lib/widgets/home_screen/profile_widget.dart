@@ -50,6 +50,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         centerTitle: true,
         actions: [
           IconButton(

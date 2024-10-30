@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:softdev_foodblog_frontend/repositories/post_repositories.dart';
+import 'package:softdev_foodblog_frontend/widgets/create_recipe_screen/view_ingredient_widget.dart';
 
 class CreateRecipeScreen extends StatefulWidget {
   const CreateRecipeScreen({super.key});
@@ -12,11 +14,45 @@ class CreateRecipeScreen extends StatefulWidget {
 
 class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
   File? _selectedImage;
+  TextEditingController titleController = TextEditingController();
+  TextEditingController detailController = TextEditingController();
+  TextEditingController recipeController = TextEditingController();
+  TextEditingController timeToCookController = TextEditingController();
+
+  Map<String, dynamic> recipeData = {
+    "title": "",
+    "detail": "",
+    "recipe": "",
+    "timetocook": 0,
+    "category": 1,
+    "image":
+        "https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg",
+    "ingredient": [],
+    "quantity": [],
+  };
+  List<Map<String, dynamic>> ingredients = [];
+  void addIngredient() async {
+    final result = await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => const ViewIngredients()));
+    if (result != null) {
+      setState(() {
+        for (var ingredient in result) {
+          ingredients.add(ingredient);
+          recipeData["ingredient"].add(ingredient["id"]);
+          recipeData["quantity"].add(ingredient["quantity"]);
+        }
+
+        debugPrint(recipeData.toString());
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(recipeData.toString());
     return Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: const Text(
             "สร้างสูตรอาหาร",
             style: TextStyle(fontWeight: FontWeight.bold),
@@ -34,13 +70,21 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                   // Recipe Name Input
                   Row(
                     children: [
-                      const Text("ชื่อ", style: TextStyle(fontSize: 16.0),),
+                      const Text(
+                        "ชื่อ",
+                        style: TextStyle(fontSize: 16.0),
+                      ),
                       const SizedBox(
-                          width: 45,), // Spacing between text and field
+                        width: 45,
+                      ), // Spacing between text and field
                       Expanded(
                         child: SizedBox(
                           height: 40.0,
                           child: TextFormField(
+                            controller: titleController,
+                            onChanged: (value) {
+                              recipeData["title"] = value;
+                            },
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.symmetric(
                                   vertical: 8.0, horizontal: 16.0),
@@ -64,12 +108,15 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                   // Category Dropdown
                   Row(
                     children: [
-                      const Text("หมวดหมู่", style: TextStyle(fontSize: 16.0),),
+                      const Text(
+                        "หมวดหมู่",
+                        style: TextStyle(fontSize: 16.0),
+                      ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: SizedBox(
                           height: 40.0,
-                          child: DropdownButtonFormField<String>(
+                          child: DropdownButtonFormField<int>(
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.symmetric(
                                   vertical: 8.0, horizontal: 16.0),
@@ -87,20 +134,22 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                             ),
                             items: const [
                               DropdownMenuItem(
-                                value: 'อาหารทานเล่น',
-                                child: Text('อาหารทานเล่น'),
+                                value: 1,
+                                child: Text('อาหารจานหลัก'),
                               ),
                               DropdownMenuItem(
-                                value: 'อาหารมื้อหลัก',
-                                child: Text('อาหารมื้อหลัก'),
+                                value: 2,
+                                child: Text('เครื่องดื่ม'),
                               ),
                               DropdownMenuItem(
-                                value: 'อาหาร...',
-                                child: Text('อาหาร...'),
+                                value: 3,
+                                child: Text('ของหวาน'),
                               ),
                             ],
                             onChanged: (value) {
-                              print(value);
+                              setState(() {
+                                recipeData["category"] = value;
+                              });
                             },
                             hint: const Text('เลือกหมวดหมู่'),
                           ),
@@ -113,7 +162,12 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                   // Image Input
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: [Text("รูปภาพอาหาร", style: TextStyle(fontSize: 16.0),)],
+                    children: [
+                      Text(
+                        "รูปภาพอาหาร",
+                        style: TextStyle(fontSize: 16.0),
+                      )
+                    ],
                   ),
                   const SizedBox(height: 5),
                   const ImageInputWidget(),
@@ -122,11 +176,19 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                   // Details Section
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: [Text("รายละเอียด", style: TextStyle(fontSize: 16.0),)],
+                    children: [
+                      Text(
+                        "รายละเอียด",
+                        style: TextStyle(fontSize: 16.0),
+                      )
+                    ],
                   ),
                   const SizedBox(height: 5),
                   SizedBox(
                     child: TextFormField(
+                      controller: detailController,
+                      onChanged: (value) => recipeData["detail"] = value,
+                      keyboardType: TextInputType.multiline,
                       maxLines: null,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
@@ -146,9 +208,44 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                   const SizedBox(height: 15),
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: [Text("วัตถุดิบ", style: TextStyle(fontSize: 16.0),)],
+                    children: [
+                      Text(
+                        "วัตถุดิบ",
+                        style: TextStyle(fontSize: 16.0),
+                      )
+                    ],
                   ),
                   const SizedBox(height: 5),
+                  // Ingredient List
+                  SizedBox(
+                    height: ingredients.isNotEmpty
+                        ? 85 * ingredients.length.toDouble()
+                        : 5,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: ingredients.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          child: ListTile(
+                            title: Text(ingredients[index]["name"]),
+                            subtitle: Text(
+                              "${ingredients[index]["quantity"]} ${ingredients[index]["unit"]}",
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.delete_rounded),
+                              onPressed: () {
+                                setState(() {
+                                  ingredients.removeAt(index);
+                                });
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                   SizedBox(
                     width: double.infinity, // Make the button take full width
                     height: 50, // Adjust the height of the button
@@ -163,11 +260,12 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                         ),
                       ),
                       onPressed: () {
-                        // Handle adding ingredients here
+                        addIngredient();
                       },
                       child: const Text(
                         '+ เพิ่มวัตถุดิบ',
-                        style: TextStyle(color: Colors.black, fontSize: 16), // Text color
+                        style: TextStyle(
+                            color: Colors.black, fontSize: 16), // Text color
                       ),
                     ),
                   ),
@@ -175,11 +273,19 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                   // Instructions Section
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: [Text("วิธีทำ", style: TextStyle(fontSize: 16.0),)],
+                    children: [
+                      Text(
+                        "วิธีทำ",
+                        style: TextStyle(fontSize: 16.0),
+                      )
+                    ],
                   ),
                   const SizedBox(height: 10),
                   SizedBox(
                     child: TextFormField(
+                      controller: recipeController,
+                      onChanged: (value) => recipeData["recipe"] = value,
+                      keyboardType: TextInputType.multiline,
                       maxLines: null,
                       decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
@@ -198,12 +304,21 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(width: 250, child: Text("เวลาในการทำโดยประมาณ", style: TextStyle(fontSize: 16.0),),),
+                      const SizedBox(
+                        width: 250,
+                        child: Text(
+                          "เวลาในการทำโดยประมาณ",
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                      ),
                       const SizedBox(width: 20),
                       Expanded(
                           child: SizedBox(
                         height: 40.0,
                         child: TextFormField(
+                          controller: timeToCookController,
+                          onChanged: (value) =>
+                              recipeData["timetocook"] = value,
                           textAlign: TextAlign.center,
                           keyboardType: TextInputType.number,
                           inputFormatters: [
@@ -224,73 +339,13 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                         ),
                       )),
                       const SizedBox(width: 15),
-                      const Text("นาที", style: TextStyle(fontSize: 16.0),)
+                      const Text(
+                        "นาที",
+                        style: TextStyle(fontSize: 16.0),
+                      )
                     ],
                   ),
                   const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Column(
-                        children: [
-                          const Text("แคลอรี่โดยประมาณ", style: TextStyle(fontSize: 16.0),),
-                          const SizedBox(height: 5),
-                          Container(
-                            width: 100,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: Colors.grey[300],
-                            ),
-                            child: TextFormField(
-                              textAlign: TextAlign.center,
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              // style: const TextStyle(fontSize: 14),
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                isDense: true,
-                                contentPadding: EdgeInsets.symmetric(
-                                    vertical: 8.0, horizontal: 10.0),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          const Text("ราคาโดยประมาณ", style: TextStyle(fontSize: 16.0),),
-                          const SizedBox(height: 5),
-                          Container(
-                            width: 100,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: Colors.grey[300],
-                            ),
-                            child: TextFormField(
-                              textAlign: TextAlign.center,
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              // style: const TextStyle(fontSize: 14),
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                isDense: true,
-                                contentPadding: EdgeInsets.symmetric(
-                                    vertical: 8.0, horizontal: 10.0),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-
                   // Create Button
                   Row(
                     children: [
@@ -306,9 +361,38 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                                   borderRadius: BorderRadius.circular(10)),
                             ),
                             onPressed: () {
-                              // Handle recipe creation logic
+                              debugPrint("Data to be sent: $recipeData");
+                              PostRepositories().createPost(recipeData).then(
+                                (value) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: value
+                                              ? Text('สร้างสูตรอาหารสำเร็จ')
+                                              : Text('สร้างสูตรอาหารไม่สำเร็จ'),
+                                          content: value
+                                              ? Text(
+                                                  'สูตรอาหารของคุณถูกสร้างเรียบร้อยแล้ว')
+                                              : Text('กรุณาลองใหม่อีกครั้ง'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text('ตกลง'),
+                                            ),
+                                          ],
+                                        );
+                                      });
+                                },
+                              );
                             },
-                            child: const Text('สร้าง', style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),),
+                            child: const Text(
+                              'สร้าง',
+                              style: TextStyle(
+                                  fontSize: 16.0, fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
                       ),
