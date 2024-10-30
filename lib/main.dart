@@ -18,16 +18,10 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // UNCOMMENT THIS TO CLEAR JWT TOKEN AND JWT EXPIRED DATE
-    /*SharedPreferences.getInstance().then((prefs) {
-      prefs.remove('jwt_token');
-      prefs.remove('jwt_expired');
-    });*/
+    //AuthenticationRepositories().clearUserData();
     AuthenticationRepositories().isTokenExpired().then((value) {
       if (value) {
-        SharedPreferences.getInstance().then((prefs) {
-          prefs.remove('jwt_token');
-          prefs.remove('jwt_expired');
-        });
+        AuthenticationRepositories().clearUserData();
       }
     });
 

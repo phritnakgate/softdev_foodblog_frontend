@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:softdev_foodblog_frontend/repositories/authen_repositories.dart';
@@ -14,26 +16,37 @@ class ProfileWidget extends StatefulWidget {
 
 class _ProfileWidgetState extends State<ProfileWidget> {
   bool showPosts = true;
-  int userId = -1;
+  int? userId;
+  Map<String, dynamic>? userData;
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserData();
+  }
+
+  Future<void> loadUserData() async {
+    final pref = await SharedPreferences.getInstance();
+    final storedUserId = pref.getInt("user_id");
+    final storedUserData = pref.getString("user_data");
+    debugPrint(storedUserId.toString());
+    debugPrint(storedUserData.toString());
+    if (storedUserId != null && storedUserData != null) {
+      setState(() {
+        userId = storedUserId;
+        userData = jsonDecode(storedUserData);
+      });
+    }
+  }
 
   // Example data for "My Posts" and "Liked Posts"
   List<String> myPosts = ['My Post 1', 'My Post 2', 'My Post 3', 'My Post 4'];
-  List<String> likedPosts = ['Liked Post 1', 'Liked Post 2'];
 
   // Example tags
   List<String> tags = ['Breakfast', 'Lunch', 'Dinner'];
 
   @override
   Widget build(BuildContext context) {
-    AuthenticationRepositories().getToken().then((value) {
-      setState(() {
-        userId = JWT
-            .verify(value, SecretKey(dotenv.env['ACCESS_SECRET_KEY']!))
-            .payload['user_id'];
-      });
-    });
-    //AuthenticationRepositories().getUserData(userId);
-    List<String> currentList = showPosts ? myPosts : likedPosts;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -41,7 +54,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         actions: [
           IconButton(
             onPressed: () {
-              final payload = AuthenticationRepositories().logout(userId);
+              AuthenticationRepositories().logout(userId!);
               Navigator.pushReplacementNamed(context, "/");
             },
             icon: const Icon(Icons.logout),
@@ -50,131 +63,40 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         title: const Text(
           'โปรไฟล์ของคุณ',
           style: TextStyle(
-            fontSize: 24,
+            fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
         backgroundColor: Theme.of(context).primaryColor,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 20.0),
-            child: CircleAvatar(
-              radius: 70,
-              backgroundImage: AssetImage('lib/images/burger.png'),
-            ),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            'burger',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 10),
-          SwitchWidget(
-            showPosts: showPosts,
-            onSwitch: (bool value) {
-              setState(() {
-                showPosts = value;
-              });
-            },
-          ),
-          const SizedBox(height: 10),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GridView.builder(
-                itemCount: currentList.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  mainAxisSpacing: 6,
-                  mainAxisExtent: 140,
-                ),
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.orangeAccent,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.2),
-                          spreadRadius: 1,
-                          blurRadius: 2,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
+      body: userData == null
+          ? const CircularProgressIndicator()
+          : Padding(
+              padding: const EdgeInsets.all(15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Center(
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundImage: AssetImage('lib/images/burger.png'),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Image.asset(
-                          'lib/images/burger.png',
-                          width: 150,
-                          height: 150,
-                        ),
-                        const SizedBox(width: 20),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        bottom: 8.0, top: 8.0),
-                                    child: Text(
-                                      showPosts
-                                          ? 'My Post ${index + 1}'
-                                          : 'Liked Post ${index + 1}',
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 10.0),
-                                    child: IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(Icons.edit),
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(width: 20),
-                              ElevatedButton(
-                                onPressed: () {
-                                  // Handle tag button click
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  foregroundColor: Colors.black,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(18),
-                                  ),
-                                ),
-                                child: Text(tags[index % tags.length]),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                  ),
+                  const SizedBox(height: 10),
+                  Center(
+                    child: Text(
+                      "${utf8.decode(userData!["FirstName"].codeUnits)} ${utf8.decode(userData!["LastName"].codeUnits)}",
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  );
-                },
+                  ),
+                  const SizedBox(height: 20),
+                  const Text("สูตรอาหารของฉัน", style: TextStyle(fontSize: 20)),
+                ],
               ),
             ),
-          ),
-        ],
-      ),
     );
   }
 }

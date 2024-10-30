@@ -26,11 +26,12 @@ class SwitchWidget extends StatelessWidget {
                 ),
               ),
             ),
-            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
             child: Text(
               'My Posts',
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 18,
                 fontWeight: showPosts ? FontWeight.bold : FontWeight.normal,
                 color: showPosts ? Colors.orangeAccent : Colors.grey,
               ),
@@ -49,11 +50,12 @@ class SwitchWidget extends StatelessWidget {
                 ),
               ),
             ),
-            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
             child: Text(
               'Liked Posts',
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 18,
                 fontWeight: showPosts ? FontWeight.normal : FontWeight.bold,
                 color: showPosts ? Colors.grey : Colors.orangeAccent,
               ),

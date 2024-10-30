@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -8,8 +10,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthenticationRepositories {
   final String url = "softdev.bkkz.org";
+
   // === HANDLE AUTHENTICATION === \\
   Future<bool> login(String username, String password) async {
+    Map<String, dynamic> userData = {};
     final response = await http.post(Uri.parse('http://$url/login'),
         body: jsonEncode({"username": username, "password": password}),
         headers: {
@@ -37,6 +41,12 @@ class AuthenticationRepositories {
       final pref = await SharedPreferences.getInstance();
       await pref.setString("jwt_token", jwtToken);
       await pref.setString("jwt_expired", jwtExpiredDate.toIso8601String());
+      final userId = JWT
+          .verify(jwtToken, SecretKey(dotenv.env['ACCESS_SECRET_KEY']!))
+          .payload['user_id'];
+      getUserData(userId);
+      await pref.setInt("user_id", userId);
+
       debugPrint("Login Success");
       return true;
     } else {
@@ -62,8 +72,7 @@ class AuthenticationRepositories {
     });
 
     if (response.statusCode == 200) {
-      await prefs.remove('jwt_token');
-      await prefs.remove('jwt_expired');
+      clearUserData();
       debugPrint('Logged out successfully.');
     } else {
       debugPrint(response.body);
@@ -92,7 +101,7 @@ class AuthenticationRepositories {
   }
 
   // === HANDLE USER DATA === \\
-  Future<void> getUserData(int id) async {
+  Future<Map<String, dynamic>> getUserData(int id) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('jwt_token') ?? '';
     final response =
@@ -101,10 +110,13 @@ class AuthenticationRepositories {
     });
     if (response.statusCode == 200) {
       final userData = jsonDecode(response.body);
-      debugPrint('User data: $userData');
+      await prefs.setString('user_data', jsonEncode(userData));
+      debugPrint('User data: ${userData.runtimeType} $userData');
+      return userData;
     } else {
       debugPrint(response.body);
       debugPrint("Failed to get user data");
+      return {};
     }
   }
 
@@ -125,5 +137,14 @@ class AuthenticationRepositories {
       return expiredDate.isBefore(DateTime.now());
     }
     return true;
+  }
+
+  // == CLEAR ALL USER DATA == \\
+  void clearUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('jwt_token');
+    await prefs.remove('jwt_expired');
+    await prefs.remove('user_id');
+    await prefs.remove('user_data');
   }
 }
