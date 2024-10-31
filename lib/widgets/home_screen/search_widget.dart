@@ -13,22 +13,17 @@ class _SearchWidgetState extends State<SearchWidget> {
   TextEditingController searchController = TextEditingController();
   TextEditingController priceMinController = TextEditingController();
   TextEditingController priceMaxController = TextEditingController();
-  int filterMode =
-      0; // 0 = search by title, 1 = search by category, 2 = search by price
-  int categoryMode = 1;
+  int filterMode = 0; // 0 = no filter, 1 = main, 2 = beverages, 3 = dessert
 
   Future<List<dynamic>>? filterPost() async {
-    switch (filterMode) {
-      case 0:
-        return PostRepositories().getPostByTitle(searchController.text);
-      case 1:
-        return PostRepositories().getPostByTag(searchController.text);
-      case 2:
-        return PostRepositories()
-            .getPostByPrice(priceMinController.text, priceMaxController.text);
-      default:
-        return PostRepositories().getPostByTitle(searchController.text);
-    }
+    debugPrint(
+        "Filtering post param: ${searchController.text}, $filterMode, ${priceMinController.text}, ${priceMaxController.text}");
+    Map<int, String> filterModeMap = {1: "main", 2: "beverages", 3: "dessert"};
+    return PostRepositories().filterPost(
+        searchController.text != "" ? searchController.text : null,
+        filterMode != 0 ? filterModeMap[filterMode] : null,
+        priceMinController.text != "" ? priceMinController.text : null,
+        priceMaxController.text != "" ? priceMaxController.text : null);
   }
 
   @override
@@ -37,6 +32,13 @@ class _SearchWidgetState extends State<SearchWidget> {
     priceMinController.dispose();
     priceMaxController.dispose();
     super.dispose();
+  }
+
+  ButtonStyle categoryBtnStyle(int mode) {
+    return ButtonStyle(
+      backgroundColor: WidgetStateProperty.all(
+          filterMode == mode ? Theme.of(context).primaryColor : Colors.white),
+    );
   }
 
   @override
@@ -56,10 +58,10 @@ class _SearchWidgetState extends State<SearchWidget> {
                   flex: 6,
                   child: TextField(
                     controller: searchController,
-                    onChanged: (value) => setState(() {
-                      filterMode = 0;
-                      searchController.text = value;
-                    }),
+                    onChanged: (value) => searchController.text = value,
+                    onEditingComplete: () {
+                      setState(() {});
+                    },
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: const Color.fromRGBO(242, 242, 247, 1),
@@ -108,40 +110,80 @@ class _SearchWidgetState extends State<SearchWidget> {
                                         Expanded(
                                           flex: 2,
                                           child: TextButton(
+                                            style: categoryBtnStyle(0),
                                             onPressed: () {
                                               setState(() {
-                                                filterMode = 1;
-                                                categoryMode = 1;
+                                                filterMode = 0;
                                               });
                                               Navigator.pop(context);
                                             },
-                                            child: Text("อาหารจานหลัก"),
+                                            child: Text("ไม่มี",
+                                                style: TextStyle(
+                                                  color: filterMode == 0
+                                                      ? Colors.white
+                                                      : Theme.of(context)
+                                                          .primaryColor,
+                                                )),
                                           ),
                                         ),
                                         Expanded(
                                           flex: 2,
                                           child: TextButton(
+                                            style: categoryBtnStyle(1),
                                             onPressed: () {
                                               setState(() {
                                                 filterMode = 1;
-                                                categoryMode = 2;
                                               });
                                               Navigator.pop(context);
                                             },
-                                            child: Text("เครื่องดื่ม"),
+                                            child: Text(
+                                              "อาหารจานหลัก",
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: filterMode == 1
+                                                    ? Colors.white
+                                                    : Theme.of(context)
+                                                        .primaryColor,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                         Expanded(
                                           flex: 2,
                                           child: TextButton(
+                                            style: categoryBtnStyle(2),
                                             onPressed: () {
                                               setState(() {
-                                                filterMode = 1;
-                                                categoryMode = 3;
+                                                filterMode = 2;
                                               });
                                               Navigator.pop(context);
                                             },
-                                            child: Text("ของหวาน"),
+                                            child: Text("เครื่องดื่ม",
+                                                style: TextStyle(
+                                                  color: filterMode == 2
+                                                      ? Colors.white
+                                                      : Theme.of(context)
+                                                          .primaryColor,
+                                                )),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 2,
+                                          child: TextButton(
+                                            style: categoryBtnStyle(3),
+                                            onPressed: () {
+                                              setState(() {
+                                                filterMode = 3;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text("ของหวาน",
+                                                style: TextStyle(
+                                                  color: filterMode == 3
+                                                      ? Colors.white
+                                                      : Theme.of(context)
+                                                          .primaryColor,
+                                                )),
                                           ),
                                         ),
                                       ],
@@ -192,9 +234,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                                             flex: 2,
                                             child: TextButton(
                                               onPressed: () {
-                                                setState(() {
-                                                  filterMode = 2;
-                                                });
+                                                setState(() {});
                                                 Navigator.pop(context);
                                               },
                                               child: Text("ค้นหาตามราคา"),

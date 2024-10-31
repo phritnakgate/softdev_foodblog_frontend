@@ -50,21 +50,16 @@ class PostRepositories {
   }
 
   // === RECIPE FILTERING === \\
-  Future<List<dynamic>> getPostByTitle(String title) async {
-    final response =
-        await http.get(Uri.parse('http://$url/posts/search?title=$title'));
-    return jsonDecode(response.body);
-  }
-
-  Future<List<dynamic>> getPostByTag(String title) async {
-    final response =
-        await http.get(Uri.parse('http://$url/posts/search?title=$title'));
-    return jsonDecode(response.body);
-  }
-
-  Future<List<dynamic>> getPostByPrice(String priceMin, String priceMax) async {
-    final response = await http.get(Uri.parse(
-        'http://$url/posts/filter/price?min_price=$priceMin&max_price=$priceMax'));
+  Future<List<dynamic>> filterPost(String? title, String? category,
+      String? priceMin, String? priceMax) async {
+    final uri = Uri.http(url, '/posts/search', {
+      if (title != null) 'title': title,
+      if (category != null) 'type': category,
+      if (priceMin != null) 'min_price': priceMin,
+      if (priceMax != null) 'max_price': priceMax
+    });
+    debugPrint(uri.toString());
+    final response = await http.get(uri);
     return jsonDecode(response.body);
   }
 
