@@ -24,7 +24,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
     "detail": "",
     "recipe": "",
     "timetocook": 0,
-    "category": 1,
+    "category": "1",
     "image":
         "https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg",
     "ingredient": [],
@@ -116,7 +116,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                       Expanded(
                         child: SizedBox(
                           height: 40.0,
-                          child: DropdownButtonFormField<int>(
+                          child: DropdownButtonFormField<String>(
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.symmetric(
                                   vertical: 8.0, horizontal: 16.0),
@@ -134,15 +134,15 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                             ),
                             items: const [
                               DropdownMenuItem(
-                                value: 1,
+                                value: "1",
                                 child: Text('อาหารจานหลัก'),
                               ),
                               DropdownMenuItem(
-                                value: 2,
+                                value: "2",
                                 child: Text('เครื่องดื่ม'),
                               ),
                               DropdownMenuItem(
-                                value: 3,
+                                value: "3",
                                 child: Text('ของหวาน'),
                               ),
                             ],
@@ -238,6 +238,8 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                               onPressed: () {
                                 setState(() {
                                   ingredients.removeAt(index);
+                                  recipeData["ingredient"].removeAt(index);
+                                  recipeData["quantity"].removeAt(index);
                                 });
                               },
                             ),
@@ -369,12 +371,15 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                                       builder: (context) {
                                         return AlertDialog(
                                           title: value
-                                              ? Text('สร้างสูตรอาหารสำเร็จ')
-                                              : Text('สร้างสูตรอาหารไม่สำเร็จ'),
+                                              ? const Text(
+                                                  'สร้างสูตรอาหารสำเร็จ')
+                                              : const Text(
+                                                  'สร้างสูตรอาหารไม่สำเร็จ'),
                                           content: value
-                                              ? Text(
+                                              ? const Text(
                                                   'สูตรอาหารของคุณถูกสร้างเรียบร้อยแล้ว')
-                                              : Text('กรุณาลองใหม่อีกครั้ง'),
+                                              : const Text(
+                                                  'กรุณาลองใหม่อีกครั้ง'),
                                           actions: [
                                             TextButton(
                                               onPressed: () {
@@ -385,6 +390,26 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                                           ],
                                         );
                                       });
+                                  if (value) {
+                                    titleController.clear();
+                                    detailController.clear();
+                                    recipeController.clear();
+                                    timeToCookController.clear();
+                                    setState(() {
+                                      ingredients.clear();
+                                      recipeData = {
+                                        "title": "",
+                                        "detail": "",
+                                        "recipe": "",
+                                        "timetocook": 0,
+                                        "category": "1",
+                                        "image":
+                                            "https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg",
+                                        "ingredient": [],
+                                        "quantity": [],
+                                      };
+                                    });
+                                  }
                                 },
                               );
                             },

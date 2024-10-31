@@ -17,6 +17,11 @@ class PostRepositories {
     return jsonDecode(response.body);
   }
 
+  Future<List<dynamic>> getPostByUser() async {
+    final response = await http.get(Uri.parse('http://$url/postu'));
+    return jsonDecode(response.body);
+  }
+
   Future<bool> createPost(Map<String, dynamic> post) async {
     // Retrieve the stored JWT
     final prefs = await SharedPreferences.getInstance();
@@ -26,15 +31,15 @@ class PostRepositories {
       ..fields['detail'] = post['detail']
       ..fields['recipe'] = post['recipe']
       ..fields['timetocook'] = post['timetocook']
-      ..fields['category'] = post['category'].toString()
+      ..fields['category'] = post['category']
       ..fields['image'] = post['image']
-      ..fields['ingredient'] = post['ingredient'].toString()
-      ..fields['quantity'] = post['quantity'].toString()
+      ..fields['ingredient'] = jsonEncode(post['ingredient'])
+      ..fields['quantity'] = jsonEncode(post['quantity'])
       ..headers['Cookie'] = 'jwt=$token';
 
     final response = await request.send();
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       debugPrint('Post created successfully.');
       return true;
     } else {

@@ -14,7 +14,8 @@ class _SearchWidgetState extends State<SearchWidget> {
   TextEditingController priceMinController = TextEditingController();
   TextEditingController priceMaxController = TextEditingController();
   int filterMode =
-      0; // 0 = search by title, 1 = search by tag, 2 = search by price
+      0; // 0 = search by title, 1 = search by category, 2 = search by price
+  int categoryMode = 1;
 
   Future<List<dynamic>>? filterPost() async {
     switch (filterMode) {
@@ -101,6 +102,49 @@ class _SearchWidgetState extends State<SearchWidget> {
                                     ),
                                     SizedBox(
                                       height: 10,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          flex: 2,
+                                          child: TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                filterMode = 1;
+                                                categoryMode = 1;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text("อาหารจานหลัก"),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 2,
+                                          child: TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                filterMode = 1;
+                                                categoryMode = 2;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text("เครื่องดื่ม"),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 2,
+                                          child: TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                filterMode = 1;
+                                                categoryMode = 3;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text("ของหวาน"),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                     Text(
                                       "ค้นหาตามราคา",
