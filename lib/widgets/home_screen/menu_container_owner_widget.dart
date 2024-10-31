@@ -7,7 +7,7 @@ import 'package:page_transition/page_transition.dart';
 
 import '../../screens/view_recipe_screen.dart';
 
-Widget menuContainer(BuildContext context, Map<String, dynamic> data) {
+Widget ownerMenuContainer(BuildContext context, Map<String, dynamic> data) {
   return GestureDetector(
     onTap: () {
       Navigator.push(
@@ -82,6 +82,26 @@ Widget menuContainer(BuildContext context, Map<String, dynamic> data) {
               ],
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: const Icon(Icons.edit),
+                  ),
+                )
+              ],
+            ),
+          )
         ],
       ),
     ),

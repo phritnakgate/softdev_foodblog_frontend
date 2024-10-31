@@ -18,7 +18,11 @@ class PostRepositories {
   }
 
   Future<List<dynamic>> getPostByUser() async {
-    final response = await http.get(Uri.parse('http://$url/postu'));
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('jwt_token') ?? '';
+    final response = await http.get(Uri.parse('http://$url/postu'), headers: {
+      "Cookie": "jwt=$token",
+    });
     return jsonDecode(response.body);
   }
 
@@ -72,6 +76,16 @@ class PostRepositories {
   Future<Map<String, dynamic>> getIngredientById(int id) async {
     final response = await http.get(Uri.parse('http://$url/ingredient/$id'));
     debugPrint(response.body);
+    return jsonDecode(response.body);
+  }
+
+  // === HANDLE BOOKMARK === \\
+  Future<List<dynamic>> getBookmarks() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('jwt_token') ?? '';
+    final response = await http.get(Uri.parse('http://$url/bookmark'), headers: {
+      "Cookie": "jwt=$token",
+    });
     return jsonDecode(response.body);
   }
 }

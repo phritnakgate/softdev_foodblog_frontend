@@ -29,7 +29,7 @@ class ViewRecipeScreen extends StatelessWidget {
                 return const Center(child: Text("Error Loading Data"));
               } else if (snapshot.hasData) {
                 Map<String, dynamic> details = snapshot.data!;
-                //debugPrint(details.toString());
+                debugPrint(details.toString());
                 return SingleChildScrollView(
                   child: SafeArea(
                     child: Padding(
@@ -153,8 +153,13 @@ class ViewRecipeScreen extends StatelessWidget {
 
 Widget tagsContainer(BuildContext context, String tag) {
   //debugPrint(tag);
+  Map<String, String> tagName = {
+    "main": "อาหารจานหลัก",
+    "dessert": "ของหวาน",
+    "beverages": "เครื่องดื่ม",
+  };
   return Container(
-    width: 100,
+    width: 120,
     height: 30,
     decoration: BoxDecoration(
       color: Theme.of(context).primaryColor,
@@ -169,7 +174,7 @@ Widget tagsContainer(BuildContext context, String tag) {
     ),
     child: Center(
       child: Text(
-        utf8.decode(tag.codeUnits),
+        tagName[utf8.decode(tag.codeUnits)]!,
         style: const TextStyle(color: Colors.white),
       ),
     ),

@@ -18,7 +18,7 @@ class _SearchWidgetState extends State<SearchWidget> {
   Future<List<dynamic>>? filterPost() async {
     debugPrint(
         "Filtering post param: ${searchController.text}, $filterMode, ${priceMinController.text}, ${priceMaxController.text}");
-    Map<int, String> filterModeMap = {1: "main", 2: "beverages", 3: "dessert"};
+    Map<int, String> filterModeMap = {1: "Main", 2: "Beverages", 3: "Dessert"};
     return PostRepositories().filterPost(
         searchController.text != "" ? searchController.text : null,
         filterMode != 0 ? filterModeMap[filterMode] : null,
@@ -288,7 +288,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                           crossAxisCount: 2,
                           mainAxisSpacing: 10,
                           crossAxisSpacing: 10,
-                          childAspectRatio: 0.75,
+                          childAspectRatio: 0.9,
                         ),
                         itemCount: posts.length,
                         itemBuilder: (context, index) {

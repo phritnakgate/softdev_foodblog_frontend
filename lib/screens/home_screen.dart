@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
       const HomeWidget(),
       const SearchWidget(),
       isLogin ? const CreateRecipeScreen() : const NoLoginScreen(),
-      isLogin ? const Placeholder() : const NoLoginScreen(),
+      isLogin ? const BookmarkWidget() : const NoLoginScreen(),
       isLogin ? const ProfileWidget() : const NoLoginScreen(),
     ];
     return Scaffold(

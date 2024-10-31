@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:softdev_foodblog_frontend/widgets/home_screen/menu_container_widget.dart';
-
 import 'package:softdev_foodblog_frontend/repositories/post_repositories.dart';
+import 'menu_container_widget.dart';
 
 class HomeWidget extends StatefulWidget {
   const HomeWidget({super.key});
@@ -38,11 +37,10 @@ class _HomeWidgetState extends State<HomeWidget> {
                       child: GridView.builder(
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 10,
-                          crossAxisSpacing: 10,
-                          childAspectRatio: 0.75,
-                        ),
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 10,
+                                crossAxisSpacing: 10,
+                                childAspectRatio: 0.9),
                         itemCount: posts.length,
                         itemBuilder: (context, index) {
                           return menuContainer(

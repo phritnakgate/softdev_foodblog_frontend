@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:softdev_foodblog_frontend/repositories/authen_repositories.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
-import 'package:softdev_foodblog_frontend/widgets/profile_screen/switch_widget.dart';
+import 'package:softdev_foodblog_frontend/repositories/post_repositories.dart';
+
+import 'menu_container_owner_widget.dart';
 
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget({super.key});
@@ -95,6 +95,39 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                   ),
                   const SizedBox(height: 20),
                   const Text("สูตรอาหารของฉัน", style: TextStyle(fontSize: 20)),
+                  const SizedBox(height: 10),
+                  FutureBuilder(
+                    future: PostRepositories().getPostByUser(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return const Center(child: Text("Error Loading Data"));
+                      } else if (snapshot.hasData) {
+                        List<dynamic> posts = snapshot.data!;
+                        return Expanded(
+                          child: GridView.builder(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 10,
+                              crossAxisSpacing: 10,
+                              childAspectRatio: 0.75,
+                            ),
+                            itemCount: posts.length,
+                            itemBuilder: (context, index) {
+                              return ownerMenuContainer(
+                                context,
+                                posts[index],
+                              );
+                            },
+                          ),
+                        );
+                      } else {
+                        return const Center(child: Text("No Data"));
+                      }
+                    },
+                  ),
                 ],
               ),
             ),
