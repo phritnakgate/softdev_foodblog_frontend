@@ -18,7 +18,7 @@ class _BookmarkWidgetState extends State<BookmarkWidget> {
       padding: const EdgeInsets.all(10),
       child: Column(
         children: [
-          Text("สูตรที่บันทึกไว้",
+          const Text("สูตรที่บันทึกไว้",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
           FutureBuilder(

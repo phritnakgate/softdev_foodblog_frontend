@@ -107,7 +107,8 @@ Widget ownerMenuContainer(BuildContext context, Map<String, dynamic> data) {
                               TextButton(
                                 onPressed: () {
                                   PostRepositories().deletePost(data["ID"]);
-                                  Navigator.pop(context);
+                                  Navigator.pushReplacementNamed(context, "/",
+                  arguments: 4);
                                 },
                                 child: const Text("ยืนยัน"),
                               ),
