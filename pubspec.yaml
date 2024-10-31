@@ -4,12 +4,22 @@ publish_to: 'none'
 version: 0.1.0
 
 environment:
-  sdk: ^3.5.0
+  sdk: ^3.4.4
 
 dependencies:
+  flutter_svg: ^2.0.5
   flutter:
     sdk: flutter
   google_fonts: ^6.2.1
+  image_picker: ^0.8.6
+  permission_handler: ^10.0.0
+  http: ^1.2.2
+  iconify_flutter: ^0.0.5
+  page_transition: ^2.1.0
+  shared_preferences: ^2.3.2
+  intl: ^0.19.0
+  dart_jsonwebtoken: ^2.14.1
+  flutter_dotenv: ^5.2.1
 
 dev_dependencies:
   flutter_test:
@@ -18,3 +28,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - lib/images/burger.png
+    - lib/images/buritto.png
+    - .env
