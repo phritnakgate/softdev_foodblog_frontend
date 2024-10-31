@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:softdev_foodblog_frontend/repositories/post_repositories.dart';
 
 import '../../screens/view_recipe_screen.dart';
 
@@ -88,7 +89,32 @@ Widget ownerMenuContainer(BuildContext context, Map<String, dynamic> data) {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text("ยืนยันการลบสูตรอาหาร"),
+                            content: const Text(
+                                "คุณต้องการลบสูตรอาหารนี้ใช่หรือไม่?"),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("ยกเลิก"),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  PostRepositories().deletePost(data["ID"]);
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("ยืนยัน"),
+                              ),
+                            ],
+                          );
+                        });
+                  },
                   child: Container(
                     width: 40,
                     height: 40,
@@ -96,7 +122,7 @@ Widget ownerMenuContainer(BuildContext context, Map<String, dynamic> data) {
                       color: Theme.of(context).primaryColor,
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: const Icon(Icons.edit),
+                    child: const Icon(Icons.delete_rounded),
                   ),
                 )
               ],

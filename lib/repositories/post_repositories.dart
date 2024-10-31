@@ -54,6 +54,15 @@ class PostRepositories {
     }
   }
 
+  Future<void> deletePost(int id) async{
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('jwt_token') ?? '';
+    final response = await http.delete(Uri.parse('http://$url/post/$id'), headers: {
+      "Cookie": "jwt=$token",
+    });
+    debugPrint(response.body);
+  }
+
   // === RECIPE FILTERING === \\
   Future<List<dynamic>> filterPost(String? title, String? category,
       String? priceMin, String? priceMax) async {
