@@ -54,10 +54,11 @@ class PostRepositories {
     }
   }
 
-  Future<void> deletePost(int id) async{
+  Future<void> deletePost(int id) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('jwt_token') ?? '';
-    final response = await http.delete(Uri.parse('http://$url/post/$id'), headers: {
+    final response =
+        await http.delete(Uri.parse('http://$url/post/$id'), headers: {
       "Cookie": "jwt=$token",
     });
     debugPrint(response.body);
@@ -85,7 +86,7 @@ class PostRepositories {
 
   Future<Map<String, dynamic>> getIngredientById(int id) async {
     final response = await http.get(Uri.parse('http://$url/ingredient/$id'));
-    debugPrint(response.body);
+    //debugPrint(response.body);
     return jsonDecode(response.body);
   }
 
@@ -218,5 +219,24 @@ class PostRepositories {
     List<dynamic> userBookmarks =
         likes.where((like) => like['UserID'] == userId).toList();
     return userBookmarks.any((like) => like['PostID'] == postId);
+  }
+
+  // === HANDLE COMMENTS === \\
+  Future<void> commented(String comment, String postId) async{
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('jwt_token') ?? '';
+    var request = http.MultipartRequest('POST', Uri.parse('http://$url/comment'))
+      ..fields['comment'] = comment
+      ..fields['postid'] = postId
+      ..headers['Cookie'] = 'jwt=$token';
+
+    final response = await request.send();
+
+    if (response.statusCode == 200) {
+      debugPrint('Commented successfully.');
+    } else {
+      debugPrint(response.reasonPhrase);
+      debugPrint('Failed to comment');
+    }
   }
 }

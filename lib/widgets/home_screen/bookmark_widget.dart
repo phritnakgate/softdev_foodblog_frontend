@@ -30,7 +30,7 @@ class _BookmarkWidgetState extends State<BookmarkWidget> {
                 return const Center(child: Text("Error Loading Data"));
               } else if (snapshot.hasData) {
                 List<dynamic> posts = snapshot.data!;
-                debugPrint("Bookmarked Posts: $posts");
+                //debugPrint("Bookmarked Posts: $posts");
                 if (posts.isEmpty) {
                   return const Center(child: Text("ไม่มีสูตรที่บันทึกไว้ :D"));
                 } else {

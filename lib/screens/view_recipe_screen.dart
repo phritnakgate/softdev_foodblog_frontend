@@ -54,12 +54,13 @@ class _ViewRecipeScreenState extends State<ViewRecipeScreen> {
 
   void likeRecipe() {
     PostRepositories().likes(widget.id).then((_) {
-    setState(() {
-      isLiked = !isLiked;
-      _postDetailsFuture = PostRepositories().getPostById(widget.id);
+      setState(() {
+        isLiked = !isLiked;
+        _postDetailsFuture = PostRepositories().getPostById(widget.id);
       });
     });
   }
+
   void handleBookmark() {
     PostRepositories().bookmark(widget.id);
     setState(() {
@@ -69,7 +70,7 @@ class _ViewRecipeScreenState extends State<ViewRecipeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("isLogin: $isLogin, User ID: $userId");
+    //debugPrint("isLogin: $isLogin, User ID: $userId");
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -86,7 +87,7 @@ class _ViewRecipeScreenState extends State<ViewRecipeScreen> {
                 return const Center(child: Text("Error Loading Data"));
               } else if (snapshot.hasData) {
                 Map<String, dynamic> details = snapshot.data!;
-                debugPrint(details.toString());
+                //debugPrint(details.toString());
                 return SingleChildScrollView(
                   child: SafeArea(
                     child: Padding(
@@ -97,7 +98,7 @@ class _ViewRecipeScreenState extends State<ViewRecipeScreen> {
                           Row(
                             children: [
                               Text(
-                                "${utf8.decode(details["User"]["FirstName"].codeUnits)} ${utf8.decode(details["User"]["LastName"].codeUnits)}.",
+                                "${utf8.decode(details["User"]["FirstName"].codeUnits)} ${utf8.decode(details["User"]["LastName"].codeUnits)}",
                                 style: TextStyle(
                                     fontSize: 20, color: Colors.grey[700]),
                               ),
@@ -132,11 +133,109 @@ class _ViewRecipeScreenState extends State<ViewRecipeScreen> {
                                             context, '/login');
                                   },
                                   icon: isLiked
-                                      ? const Icon(Icons.favorite)
+                                      ? const Icon(Icons.favorite,
+                                          color: Colors.red)
                                       : const Icon(Icons.favorite_border)),
                               Text(details["Like"].length.toString()),
                               IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        builder: (BuildContext context) {
+                                          TextEditingController
+                                              commentController =
+                                              TextEditingController();
+                                          return Padding(
+                                            padding: EdgeInsets.only(
+                                                left: 10,
+                                                right: 10,
+                                                top: 10,
+                                                bottom: MediaQuery.of(context)
+                                                    .viewInsets
+                                                    .bottom),
+                                            child: SingleChildScrollView(
+                                              child: SizedBox(
+                                                height: 300,
+                                                child: Column(
+                                                  children: [
+                                                    const Text(
+                                                      "ความคิดเห็น",
+                                                      style: TextStyle(
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    details["PostComments"]
+                                                                .length ==
+                                                            0
+                                                        ? const Text(
+                                                            "ยังไม่มีความคิดเห็น")
+                                                        : Expanded(
+                                                            child: ListView
+                                                                .builder(
+                                                            itemCount: details[
+                                                                    "PostComments"]
+                                                                .length,
+                                                            itemBuilder:
+                                                                (context,
+                                                                    index) {
+                                                              return commentContainer(
+                                                                "ผู้ใช้ $index",
+                                                                utf8.decode(details["PostComments"][index]
+                                                                            [
+                                                                            "Comment"]
+                                                                        [
+                                                                        "Comment"]
+                                                                    .codeUnits),
+                                                              );
+                                                            },
+                                                          )),
+                                                    Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: TextField(
+                                                            controller:
+                                                                commentController,
+                                                            onChanged: (value) =>
+                                                                commentController
+                                                                        .text =
+                                                                    value,
+                                                            decoration:
+                                                                const InputDecoration(
+                                                                    hintText:
+                                                                        "แสดงความคิดเห็น"),
+                                                          ),
+                                                        ),
+                                                        IconButton(
+                                                            onPressed: () {
+                                                              if (isLogin) {
+                                                                PostRepositories()
+                                                                    .commented(
+                                                                        commentController
+                                                                            .text,
+                                                                        widget
+                                                                            .id
+                                                                            .toString());
+                                                                setState(() {});
+                                                              } else {
+                                                                Navigator
+                                                                    .pushNamed(
+                                                                        context,
+                                                                        '/login');
+                                                              }
+                                                            },
+                                                            icon: const Icon(
+                                                                Icons.send)),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        });
+                                  },
                                   icon: const Iconify(Uil.comment)),
                               IconButton(
                                   onPressed: () {},
@@ -287,5 +386,23 @@ Widget ingredientContainer(
             ],
           ),
         )),
+  );
+}
+
+Widget commentContainer(String fullName, String commentText) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8.0),
+    child: Row(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(fullName, style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 5),
+            Text(commentText),
+          ],
+        ),
+      ],
+    ),
   );
 }
