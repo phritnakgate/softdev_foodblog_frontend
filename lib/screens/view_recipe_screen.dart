@@ -5,15 +5,52 @@ import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:iconify_flutter/icons/tabler.dart';
 import 'package:iconify_flutter/icons/uil.dart';
+import 'package:softdev_foodblog_frontend/repositories/authen_repositories.dart';
 import 'package:softdev_foodblog_frontend/repositories/post_repositories.dart';
 
-class ViewRecipeScreen extends StatelessWidget {
+class ViewRecipeScreen extends StatefulWidget {
   const ViewRecipeScreen({required this.id, super.key});
 
   final int id;
 
   @override
+  State<ViewRecipeScreen> createState() => _ViewRecipeScreenState();
+}
+
+class _ViewRecipeScreenState extends State<ViewRecipeScreen> {
+  bool isLogin = false;
+  int userId = 0;
+  bool isBookmarked = false;
+  bool isLiked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    AuthenticationRepositories().isLogin().then((value) {
+      setState(() {
+        isLogin = value;
+      });
+    });
+    AuthenticationRepositories().getUserId().then((value) {
+      setState(() {
+        userId = value;
+      });
+    });
+    PostRepositories().isBookmarked(widget.id).then((value) {
+      setState(() {
+        isBookmarked = value;
+      });
+    });
+    PostRepositories().isLiked(widget.id).then((value) {
+      setState(() {
+        isLiked = value;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    debugPrint("isLogin: $isLogin, User ID: $userId");
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -21,7 +58,7 @@ class ViewRecipeScreen extends StatelessWidget {
               icon: const Icon(Icons.arrow_back_ios_new_rounded)),
         ),
         body: FutureBuilder<Map<String, dynamic>>(
-            future: PostRepositories().getPostById(id),
+            future: PostRepositories().getPostById(widget.id),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -45,9 +82,10 @@ class ViewRecipeScreen extends StatelessWidget {
                                     fontSize: 20, color: Colors.grey[700]),
                               ),
                               const Spacer(),
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.edit))
+                              if (userId == details["User"]["Id"])
+                                IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.edit))
                             ],
                           ),
                           Text(utf8.decode(details["Title"].codeUnits),
@@ -67,8 +105,18 @@ class ViewRecipeScreen extends StatelessWidget {
                           Row(
                             children: [
                               IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.favorite_border)),
+                                  onPressed: () {
+                                    isLogin
+                                        ? PostRepositories().likes(widget.id)
+                                        : Navigator.pushNamed(
+                                            context, '/login');
+                                    setState(() {
+                                      isLiked = !isLiked;
+                                    });
+                                  },
+                                  icon: isLiked
+                                      ? const Icon(Icons.favorite)
+                                      : const Icon(Icons.favorite_border)),
                               IconButton(
                                   onPressed: () {},
                                   icon: const Iconify(Uil.comment)),
@@ -77,7 +125,14 @@ class ViewRecipeScreen extends StatelessWidget {
                                   icon: const Iconify(Tabler.send)),
                               const Spacer(),
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  isLogin
+                                      ? PostRepositories().bookmark(widget.id)
+                                      : Navigator.pushNamed(context, '/login');
+                                  setState(() {
+                                    isBookmarked = !isBookmarked;
+                                  });
+                                },
                                 child: Container(
                                   width: 40,
                                   height: 40,
@@ -85,7 +140,9 @@ class ViewRecipeScreen extends StatelessWidget {
                                     color: Theme.of(context).primaryColor,
                                     borderRadius: BorderRadius.circular(15),
                                   ),
-                                  child: const Icon(Icons.bookmark_outline),
+                                  child: isBookmarked
+                                      ? const Icon(Icons.bookmark)
+                                      : const Icon(Icons.bookmark_border),
                                 ),
                               ),
                             ],

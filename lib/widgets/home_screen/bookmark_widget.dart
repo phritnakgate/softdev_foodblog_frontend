@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:softdev_foodblog_frontend/repositories/post_repositories.dart';
 
-import 'menu_container_widget.dart';
+import 'menu_container_bookmark_widget.dart';
 
 class BookmarkWidget extends StatefulWidget {
   const BookmarkWidget({super.key});
@@ -30,6 +30,7 @@ class _BookmarkWidgetState extends State<BookmarkWidget> {
                 return const Center(child: Text("Error Loading Data"));
               } else if (snapshot.hasData) {
                 List<dynamic> posts = snapshot.data!;
+                debugPrint("Bookmarked Posts: $posts");
                 if (posts.isEmpty) {
                   return const Center(child: Text("ไม่มีสูตรที่บันทึกไว้ :D"));
                 } else {
@@ -40,11 +41,11 @@ class _BookmarkWidgetState extends State<BookmarkWidget> {
                         crossAxisCount: 2,
                         mainAxisSpacing: 10,
                         crossAxisSpacing: 10,
-                        childAspectRatio: 0.75,
+                        childAspectRatio: 0.9,
                       ),
                       itemCount: posts.length,
                       itemBuilder: (context, index) {
-                        return menuContainer(
+                        return bookmarkedMenuContainer(
                           context,
                           posts[index],
                         );

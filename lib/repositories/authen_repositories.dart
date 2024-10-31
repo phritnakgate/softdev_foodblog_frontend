@@ -58,6 +58,11 @@ class AuthenticationRepositories {
     return prefs.getString('jwt_token') ?? '';
   }
 
+  Future<int> getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('user_id') ?? 0;
+  }
+
   Future<void> logout(int id) async {
     final logouturl = Uri.parse('http://$url/logout/$id');
 

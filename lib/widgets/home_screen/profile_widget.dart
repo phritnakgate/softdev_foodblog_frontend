@@ -39,12 +39,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     }
   }
 
-  // Example data for "My Posts" and "Liked Posts"
-  List<String> myPosts = ['My Post 1', 'My Post 2', 'My Post 3', 'My Post 4'];
-
-  // Example tags
-  List<String> tags = ['Breakfast', 'Lunch', 'Dinner'];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,24 +99,29 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                         return const Center(child: Text("Error Loading Data"));
                       } else if (snapshot.hasData) {
                         List<dynamic> posts = snapshot.data!;
-                        return Expanded(
-                          child: GridView.builder(
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 10,
-                              crossAxisSpacing: 10,
-                              childAspectRatio: 0.75,
+                        if (posts.isEmpty) {
+                          return const Center(
+                              child: Text("ไม่มีสูตรอาหารของคุณ :D"));
+                        } else {
+                          return Expanded(
+                            child: GridView.builder(
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 10,
+                                crossAxisSpacing: 10,
+                                childAspectRatio: 0.75,
+                              ),
+                              itemCount: posts.length,
+                              itemBuilder: (context, index) {
+                                return ownerMenuContainer(
+                                  context,
+                                  posts[index],
+                                );
+                              },
                             ),
-                            itemCount: posts.length,
-                            itemBuilder: (context, index) {
-                              return ownerMenuContainer(
-                                context,
-                                posts[index],
-                              );
-                            },
-                          ),
-                        );
+                          );
+                        }
                       } else {
                         return const Center(child: Text("No Data"));
                       }
