@@ -14,7 +14,7 @@ class ViewRecipeScreen extends StatefulWidget {
 
   final int id;
   final int fromWhatPage;
-
+  
   @override
   State<ViewRecipeScreen> createState() => _ViewRecipeScreenState();
 }
@@ -30,6 +30,7 @@ class _ViewRecipeScreenState extends State<ViewRecipeScreen> {
   void initState() {
     super.initState();
     _postDetailsFuture = PostRepositories().getPostById(widget.id);
+    // debugPrint(_postDetailsFuture.toString());
     AuthenticationRepositories().isLogin().then((value) {
       setState(() {
         isLogin = value;
@@ -52,6 +53,17 @@ class _ViewRecipeScreenState extends State<ViewRecipeScreen> {
     });
   }
 
+  void handleComment(text) {
+    PostRepositories().commented(text, widget.id.toString()).then((_){
+     setState(() {
+       _postDetailsFuture = PostRepositories().getPostById(widget.id);
+       Navigator.pop(context);
+       openCommentsModal();
+     });
+    });
+
+  }
+
   void likeRecipe() {
     PostRepositories().likes(widget.id).then((_) {
       setState(() {
@@ -67,10 +79,86 @@ class _ViewRecipeScreenState extends State<ViewRecipeScreen> {
       isBookmarked = !isBookmarked;
     });
   }
+  void openCommentsModal() {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    builder: (BuildContext context) {
+      TextEditingController commentController = TextEditingController();
+      return Padding(
+        padding: EdgeInsets.only(
+          left: 10,
+          right: 10,
+          top: 10,
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: SingleChildScrollView(
+          child: SizedBox(
+            height: 300,
+            child: Column(
+              children: [
+                const Text(
+                  "ความคิดเห็น",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                FutureBuilder<Map<String, dynamic>>(
+                  future: _postDetailsFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return const Text("Error loading comments");
+                    } else {
+                      List comments = snapshot.data!["PostComments"];
+                      return comments.isEmpty
+                          ? const Text("ยังไม่มีความคิดเห็น")
+                          : Expanded(
+                              child: ListView.builder(
+                                itemCount: comments.length,
+                                itemBuilder: (context, index) {
+                                  return commentContainer(
+                                    comments[index]["User"]["Username"],
+                                    utf8.decode(comments[index]["Comment"]["Comment"].codeUnits),
+                                  );
+                                },
+                              ),
+                            );
+                    }
+                  },
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: commentController,
+                        decoration: const InputDecoration(hintText: "แสดงความคิดเห็น"),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        if (isLogin) {
+                          handleComment(commentController.text);
+                          commentController.clear();
+                        } else {
+                          Navigator.pushNamed(context, '/login');
+                        }
+                      },
+                      icon: const Icon(Icons.send),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
-    //debugPrint("isLogin: $isLogin, User ID: $userId");
+    // debugPrint("isLogin: $isLogin, User ID: $userId");
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -139,103 +227,9 @@ class _ViewRecipeScreenState extends State<ViewRecipeScreen> {
                               Text(details["Like"].length.toString()),
                               IconButton(
                                   onPressed: () {
-                                    showModalBottomSheet(
-                                        context: context,
-                                        isScrollControlled: true,
-                                        builder: (BuildContext context) {
-                                          TextEditingController
-                                              commentController =
-                                              TextEditingController();
-                                          return Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 10,
-                                                right: 10,
-                                                top: 10,
-                                                bottom: MediaQuery.of(context)
-                                                    .viewInsets
-                                                    .bottom),
-                                            child: SingleChildScrollView(
-                                              child: SizedBox(
-                                                height: 300,
-                                                child: Column(
-                                                  children: [
-                                                    const Text(
-                                                      "ความคิดเห็น",
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                    details["PostComments"]
-                                                                .length ==
-                                                            0
-                                                        ? const Text(
-                                                            "ยังไม่มีความคิดเห็น")
-                                                        : Expanded(
-                                                            child: ListView
-                                                                .builder(
-                                                            itemCount: details[
-                                                                    "PostComments"]
-                                                                .length,
-                                                            itemBuilder:
-                                                                (context,
-                                                                    index) {
-                                                              return commentContainer(
-                                                                "ผู้ใช้ $index",
-                                                                utf8.decode(details["PostComments"][index]
-                                                                            [
-                                                                            "Comment"]
-                                                                        [
-                                                                        "Comment"]
-                                                                    .codeUnits),
-                                                              );
-                                                            },
-                                                          )),
-                                                    Row(
-                                                      children: [
-                                                        Expanded(
-                                                          child: TextField(
-                                                            controller:
-                                                                commentController,
-                                                            onChanged: (value) =>
-                                                                commentController
-                                                                        .text =
-                                                                    value,
-                                                            decoration:
-                                                                const InputDecoration(
-                                                                    hintText:
-                                                                        "แสดงความคิดเห็น"),
-                                                          ),
-                                                        ),
-                                                        IconButton(
-                                                            onPressed: () {
-                                                              if (isLogin) {
-                                                                PostRepositories()
-                                                                    .commented(
-                                                                        commentController
-                                                                            .text,
-                                                                        widget
-                                                                            .id
-                                                                            .toString());
-                                                                setState(() {});
-                                                              } else {
-                                                                Navigator
-                                                                    .pushNamed(
-                                                                        context,
-                                                                        '/login');
-                                                              }
-                                                            },
-                                                            icon: const Icon(
-                                                                Icons.send)),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        });
-                                  },
+                                    openCommentsModal();
+                                  }
+                                  ,
                                   icon: const Iconify(Uil.comment)),
                               IconButton(
                                   onPressed: () {},
@@ -397,7 +391,7 @@ Widget commentContainer(String fullName, String commentText) {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(fullName, style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(fullName, style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 5),
             Text(commentText),
           ],
