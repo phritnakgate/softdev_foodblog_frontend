@@ -295,6 +295,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                           return menuContainer(
                             context,
                             posts[index],
+                            1
                           );
                         },
                       ),

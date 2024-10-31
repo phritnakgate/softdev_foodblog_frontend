@@ -35,6 +35,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as int?;
+    if (args != null && args != selectedIndex) {
+      setState(() {
+        selectedIndex = args;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     AuthenticationRepositories().isLogin().then((value) {
       setState(() {

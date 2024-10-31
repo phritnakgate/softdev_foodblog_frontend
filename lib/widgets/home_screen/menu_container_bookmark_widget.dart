@@ -15,7 +15,7 @@ Widget bookmarkedMenuContainer(
         context,
         PageTransition(
           type: PageTransitionType.rightToLeft,
-          child: ViewRecipeScreen(id: data["PostID"]),
+          child: ViewRecipeScreen(id: data["PostID"], fromWhatPage: 3),
         ),
       );
     },

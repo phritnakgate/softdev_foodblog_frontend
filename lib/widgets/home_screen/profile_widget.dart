@@ -87,7 +87,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const Divider(),
                   const Text("สูตรอาหารของฉัน", style: TextStyle(fontSize: 20)),
                   const SizedBox(height: 10),
                   FutureBuilder(

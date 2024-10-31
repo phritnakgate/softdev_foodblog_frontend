@@ -15,7 +15,7 @@ Widget ownerMenuContainer(BuildContext context, Map<String, dynamic> data) {
         context,
         PageTransition(
           type: PageTransitionType.rightToLeft,
-          child: ViewRecipeScreen(id: data["ID"]),
+          child: ViewRecipeScreen(id: data["ID"], fromWhatPage: 4),
         ),
       );
     },

@@ -9,9 +9,10 @@ import 'package:softdev_foodblog_frontend/repositories/authen_repositories.dart'
 import 'package:softdev_foodblog_frontend/repositories/post_repositories.dart';
 
 class ViewRecipeScreen extends StatefulWidget {
-  const ViewRecipeScreen({required this.id, super.key});
+  const ViewRecipeScreen({required this.id,required this.fromWhatPage, super.key});
 
   final int id;
+  final int fromWhatPage;
 
   @override
   State<ViewRecipeScreen> createState() => _ViewRecipeScreenState();
@@ -54,7 +55,7 @@ class _ViewRecipeScreenState extends State<ViewRecipeScreen> {
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pushReplacementNamed(context, "/", arguments: widget.fromWhatPage),
               icon: const Icon(Icons.arrow_back_ios_new_rounded)),
         ),
         body: FutureBuilder<Map<String, dynamic>>(

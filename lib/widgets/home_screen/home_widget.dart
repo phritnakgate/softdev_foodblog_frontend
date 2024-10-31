@@ -46,6 +46,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                           return menuContainer(
                             context,
                             posts[index],
+                            0
                           );
                         },
                       ),

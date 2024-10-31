@@ -7,14 +7,14 @@ import 'package:page_transition/page_transition.dart';
 
 import '../../screens/view_recipe_screen.dart';
 
-Widget menuContainer(BuildContext context, Map<String, dynamic> data) {
+Widget menuContainer(BuildContext context, Map<String, dynamic> data, int fromPage) {
   return GestureDetector(
     onTap: () {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         PageTransition(
           type: PageTransitionType.rightToLeft,
-          child: ViewRecipeScreen(id: data["ID"]),
+          child: ViewRecipeScreen(id: data["ID"], fromWhatPage: fromPage,),
         ),
       );
     },
