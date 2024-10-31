@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:softdev_foodblog_frontend/repositories/authen_repositories.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -8,7 +9,6 @@ class RegisterScreen extends StatelessWidget {
     TextEditingController firstNameController = TextEditingController();
     TextEditingController lastNameController = TextEditingController();
     TextEditingController usernameController = TextEditingController();
-    TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
 
     return Scaffold(
@@ -94,16 +94,60 @@ class RegisterScreen extends StatelessWidget {
                                 buildTextFormField(
                                     'Username', usernameController),
                                 const SizedBox(height: 16.0),
-                                buildTextFormField('Email', emailController),
-                                const SizedBox(height: 16.0),
                                 buildTextFormField(
                                     'Password', passwordController,
                                     obscureText: true),
                                 const SizedBox(height: 16.0),
                                 ElevatedButton(
                                   onPressed: () {
-                                    Navigator.pushReplacementNamed(
-                                        context, '/login');
+                                    debugPrint(
+                                        "Data: ${usernameController.text} ${passwordController.text} ${firstNameController.text} ${lastNameController.text}");
+                                    AuthenticationRepositories()
+                                        .registerUser(
+                                            usernameController.text,
+                                            passwordController.text,
+                                            firstNameController.text,
+                                            lastNameController.text)
+                                        .then((value) {
+                                      if (value) {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: const Text(
+                                                    'สมัครสมาชิกสำเร็จ'),
+                                                content: const Text(
+                                                    'กรุณาเข้าสู่ระบบ'),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                        Navigator.pushReplacementNamed(context, '/login');
+                                                      },
+                                                      child: const Text('ตกลง'))
+                                                ],
+                                              );
+                                            });
+                                      } else {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: const Text(
+                                                    'สมัครสมาชิกไม่สำเร็จ'),
+                                                content: const Text(
+                                                    'กรุณาลองใหม่อีกครั้ง'),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed: () =>
+                                                          Navigator.pop(
+                                                              context),
+                                                      child: const Text('ตกลง'))
+                                                ],
+                                              );
+                                            });
+                                      }
+                                    });
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFFFFA20C),

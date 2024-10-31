@@ -79,7 +79,7 @@ class AuthenticationRepositories {
     }
   }
 
-  Future<void> registerUser(String username, String password, String firstName,
+  Future<bool> registerUser(String username, String password, String firstName,
       String lastName) async {
     final registerUrl = Uri.parse('http://$url/user');
 
@@ -93,9 +93,11 @@ class AuthenticationRepositories {
 
     if (response.statusCode == 200) {
       debugPrint('User registered successfully.');
+      return true;
     } else {
       debugPrint(response.reasonPhrase);
       debugPrint("Failed to register user");
+      return false;
     }
   }
 

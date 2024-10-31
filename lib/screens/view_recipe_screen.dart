@@ -154,9 +154,9 @@ class ViewRecipeScreen extends StatelessWidget {
 Widget tagsContainer(BuildContext context, String tag) {
   //debugPrint(tag);
   Map<String, String> tagName = {
-    "main": "อาหารจานหลัก",
-    "dessert": "ของหวาน",
-    "beverages": "เครื่องดื่ม",
+    "Main": "อาหารจานหลัก",
+    "Dessert": "ของหวาน",
+    "Beverages": "เครื่องดื่ม",
   };
   return Container(
     width: 120,
