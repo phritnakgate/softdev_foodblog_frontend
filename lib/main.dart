@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:softdev_foodblog_frontend/configs/theme.dart';
 import 'package:softdev_foodblog_frontend/repositories/authen_repositories.dart';
 import 'package:softdev_foodblog_frontend/widgets/home_screen/home_widgets.dart';

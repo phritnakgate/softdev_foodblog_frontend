@@ -18,6 +18,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
   TextEditingController detailController = TextEditingController();
   TextEditingController recipeController = TextEditingController();
   TextEditingController timeToCookController = TextEditingController();
+  TextEditingController imageUrlController = TextEditingController();
 
   Map<String, dynamic> recipeData = {
     "title": "",
@@ -30,6 +31,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
     "ingredient": [],
     "quantity": [],
   };
+
   List<Map<String, dynamic>> ingredients = [];
   void addIngredient() async {
     final result = await Navigator.push(context,
@@ -170,9 +172,26 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                     ],
                   ),
                   const SizedBox(height: 5),
-                  const ImageInputWidget(),
+                  SizedBox(
+                    child: TextFormField(
+                      controller: imageUrlController,
+                      onChanged: (value) => recipeData["image"] = value,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16.0),
+                        filled: true,
+                        fillColor: Colors.grey[300],
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide:
+                              const BorderSide(color: Colors.transparent),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 15),
-
                   // Details Section
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.start,

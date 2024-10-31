@@ -9,7 +9,8 @@ import 'package:softdev_foodblog_frontend/repositories/authen_repositories.dart'
 import 'package:softdev_foodblog_frontend/repositories/post_repositories.dart';
 
 class ViewRecipeScreen extends StatefulWidget {
-  const ViewRecipeScreen({required this.id,required this.fromWhatPage, super.key});
+  const ViewRecipeScreen(
+      {required this.id, required this.fromWhatPage, super.key});
 
   final int id;
   final int fromWhatPage;
@@ -23,10 +24,12 @@ class _ViewRecipeScreenState extends State<ViewRecipeScreen> {
   int userId = 0;
   bool isBookmarked = false;
   bool isLiked = false;
+  late Future<Map<String, dynamic>> _postDetailsFuture;
 
   @override
   void initState() {
     super.initState();
+    _postDetailsFuture = PostRepositories().getPostById(widget.id);
     AuthenticationRepositories().isLogin().then((value) {
       setState(() {
         isLogin = value;
@@ -49,17 +52,33 @@ class _ViewRecipeScreenState extends State<ViewRecipeScreen> {
     });
   }
 
+  void likeRecipe() {
+    PostRepositories().likes(widget.id).then((_) {
+    setState(() {
+      isLiked = !isLiked;
+      _postDetailsFuture = PostRepositories().getPostById(widget.id);
+      });
+    });
+  }
+  void handleBookmark() {
+    PostRepositories().bookmark(widget.id);
+    setState(() {
+      isBookmarked = !isBookmarked;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     debugPrint("isLogin: $isLogin, User ID: $userId");
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
-              onPressed: () => Navigator.pushReplacementNamed(context, "/", arguments: widget.fromWhatPage),
+              onPressed: () => Navigator.pushReplacementNamed(context, "/",
+                  arguments: widget.fromWhatPage),
               icon: const Icon(Icons.arrow_back_ios_new_rounded)),
         ),
         body: FutureBuilder<Map<String, dynamic>>(
-            future: PostRepositories().getPostById(widget.id),
+            future: _postDetailsFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -108,16 +127,14 @@ class _ViewRecipeScreenState extends State<ViewRecipeScreen> {
                               IconButton(
                                   onPressed: () {
                                     isLogin
-                                        ? PostRepositories().likes(widget.id)
+                                        ? likeRecipe()
                                         : Navigator.pushNamed(
                                             context, '/login');
-                                    setState(() {
-                                      isLiked = !isLiked;
-                                    });
                                   },
                                   icon: isLiked
                                       ? const Icon(Icons.favorite)
                                       : const Icon(Icons.favorite_border)),
+                              Text(details["Like"].length.toString()),
                               IconButton(
                                   onPressed: () {},
                                   icon: const Iconify(Uil.comment)),
@@ -128,11 +145,8 @@ class _ViewRecipeScreenState extends State<ViewRecipeScreen> {
                               GestureDetector(
                                 onTap: () {
                                   isLogin
-                                      ? PostRepositories().bookmark(widget.id)
+                                      ? handleBookmark()
                                       : Navigator.pushNamed(context, '/login');
-                                  setState(() {
-                                    isBookmarked = !isBookmarked;
-                                  });
                                 },
                                 child: Container(
                                   width: 40,
