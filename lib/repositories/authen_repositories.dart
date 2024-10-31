@@ -69,7 +69,7 @@ class AuthenticationRepositories {
     // Retrieve the stored JWT
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('jwt_token') ?? '';
-    debugPrint('Token: $token');
+    //debugPrint('Token: $token');
 
     final response = await http.post(logouturl, headers: {
       "Cookie": "jwt=$token",
@@ -117,7 +117,7 @@ class AuthenticationRepositories {
     if (response.statusCode == 200) {
       final userData = jsonDecode(response.body);
       await prefs.setString('user_data', jsonEncode(userData));
-      debugPrint('User data: ${userData.runtimeType} $userData');
+      //debugPrint('User data: ${userData.runtimeType} $userData');
       return userData;
     } else {
       debugPrint(response.body);
